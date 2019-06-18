@@ -33,9 +33,9 @@ private fun chooseBit(lambda: Int, i: Int, h: Int): Pair<Int, Int> {
  */
 fun conditionsBit(lambda: Int, i: Int, h: Int): Boolean {
     val n = possibleN[i]
-    val combinationCond: Boolean = combinations(n,h) >= 2f.pow(lambda).toLong()
-    val minLevelCond: Boolean = 4*h.toFloat().pow(2) < n
-    val maxLevelCond: Boolean = n >= 16*h.toFloat().pow(2)
+    val combinationCond: Boolean = combinations(n,h) >= 2f.pow(lambda).toLong()     //(n h) >= 2^λ
+    val minLevelCond: Boolean = 4*h.toFloat().pow(2) < n                        // 4h² < n
+    val maxLevelCond: Boolean = n >= 16*h.toFloat().pow(2)                      // n <= 16h²
 
     return  combinationCond and minLevelCond and maxLevelCond
 }
