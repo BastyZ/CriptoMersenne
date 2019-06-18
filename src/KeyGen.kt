@@ -7,7 +7,7 @@ val possibleN = listOf(
     6972593, 13466917, 20996011, 24036583, 25964951, 30402457, 32582657, 37156667, 42643801, 4311260
 )
 
-/** Choses an mersenne exponent _n_, such that _(n over h) >= 2^lambda_ and _4h² < n <= 16h²_
+/** Choses an mersenne exponent _n_, such that _(n over h) >= 2^λ_ and _4h² < n <= 16h²_
  *
  * @param lambda security parameter
  */
