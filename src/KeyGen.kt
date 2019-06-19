@@ -11,19 +11,26 @@ val possibleN = listOf(
 
 // String while we lack of a better representation
 fun keyGenBit(lambda: Int): Pair<String, String> {
+    // get n and h such that 2^n - 1 is a mersenne prime and (n over h) >= 2^λ
     val (n, h) = mersennePrimeBit(lambda)
+    // get two n-bit strings off hamming weight h
     val (F, G) = Pair(hammingString(n, h)!!, hammingString(n, h)!!)
-    val p = BigInteger("2").pow(n).dec()
+    val p = BigInteger("2").pow(n).dec()                        // 2^n - 1
+    // return pk:= H = seq( int(F) / int(G) ) and sk:= G
     return Pair(seq( intMod(F, p).div(intMod(G, p)), p, n), G)
 }
 
 fun keyGenBlock(lambda: Int): Pair<Pair<String, String>, String> {
+    // get n and h such that 2^n - 1 is a mersenne prime and h = λ
     val h = lambda
     val n: Int = mersennePrimeBlock(lambda)
+    // get two n-bit strings off hamming weight h
     val (F, G) = Pair(hammingString(n, h)!!, hammingString(n, h)!!)
+    // get a n-bit random, string
     val R = hammingString(n, nextInt(n))!!
-    val p = BigInteger("2").pow(n).dec()
+    val p = BigInteger("2").pow(n).dec()                        // 2^n - 1
     val pk = Pair(R, seq(int(F).times(int(R).plus(int(G))), p, n) ) // pk := (R,F ∙ R + G)
+    // return pk := (R,F ∙ R + G) := (R,T) and sk := F
     return Pair(pk, F)
 }
 
@@ -41,16 +48,16 @@ internal fun mersennePrimeBlock(lambda: Int): Int {
 
 private fun chooseBit(lambda: Int, i: Int, h: Int): Pair<Int, Int> {
     return when {
-        conditionsBit(lambda, possibleN[i], h) -> Pair(possibleN[i],h)
-        possibleN[i] > h + 1        -> chooseBit(lambda, i, h+1)
-        else                        -> chooseBit(lambda, i+1, 1)
+        conditionsBit(lambda, possibleN[i], h)  -> Pair(possibleN[i],h)
+        possibleN[i] > h + 1                    -> chooseBit(lambda, i, h+1)
+        else                                    -> chooseBit(lambda, i+1, 1)
     }
 }
 
 private fun chooseBlock(lambda: Int, i: Int): Int {
     return when {
-        conditionsBlock(lambda, possibleN[i]) -> possibleN[i]
-        else -> chooseBlock(lambda, i + 1)
+        conditionsBlock(lambda, possibleN[i])   -> possibleN[i]
+        else                                    -> chooseBlock(lambda, i + 1)
     }
 }
 
@@ -67,6 +74,7 @@ private fun conditionsBit(lambda: Int, n: Int, h: Int): Boolean {
 
 private fun conditionsBlock(h: Int, n: Int): Boolean {
     val maxLevelCond: Boolean = 16*h.toFloat().pow(2) >= n  // 16h² >= n
-    val minLevelCond: Boolean = n > 10*h.toFloat().pow(2)    // n > 10h²
+    val minLevelCond: Boolean = n > 10*h.toFloat().pow(2)   // n > 10h²
+
     return minLevelCond and maxLevelCond
 }
