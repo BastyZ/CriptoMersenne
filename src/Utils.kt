@@ -47,8 +47,13 @@ fun aBigInteger(str: String): BigInteger {
     return BigInteger(str, 2)
 }
 
-internal fun int(str: String, p: BigInteger): BigInteger {
+// int(x) on the paper
+internal fun intMod(str: String, p: BigInteger): BigInteger {
     return BigInteger(str, 2).mod(p)
+}
+
+internal fun int(str: String): BigInteger {
+    return BigInteger(str, 2)
 }
 
 /**
@@ -58,7 +63,7 @@ internal fun seq(num: BigInteger, p: BigInteger, n: Int): String {
     return num.mod(p).toBitString(n, 2)
 }
 
-private fun BigInteger.toBitString(nbits: Int, radix: Int): String {
+internal fun BigInteger.toBitString(nbits: Int, radix: Int): String {
     var string = this.toString(radix)
     while (string.length < nbits) string = "0$string"
     return string

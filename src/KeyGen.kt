@@ -14,7 +14,7 @@ fun keyGenBit(lambda: Int): Pair<String, String> {
     val (n, h) = mersennePrimeBit(lambda)
     val (F, G) = Pair(hammingString(n, h)!!, hammingString(n, h)!!)
     val p = BigInteger("2").pow(n).dec()
-    return Pair(seq( int(F, p).div(int(G, p)), p, n), G)
+    return Pair(seq( intMod(F, p).div(intMod(G, p)), p, n), G)
 }
 
 fun keyGenBlock(lambda: Int): Pair<Pair<String, String>, String> {
@@ -22,8 +22,8 @@ fun keyGenBlock(lambda: Int): Pair<Pair<String, String>, String> {
     val n: Int = mersennePrimeBlock(lambda)
     val (F, G) = Pair(hammingString(n, h)!!, hammingString(n, h)!!)
     val R = hammingString(n, nextInt(n))!!
-
-    val pk = Pair(R,"F ∙ R + G")
+    val p = BigInteger("2").pow(n).dec()
+    val pk = Pair(R, seq(int(F).times(int(R).plus(int(G))), p, n) ) // pk := (R,F ∙ R + G)
     return Pair(pk, F)
 }
 
