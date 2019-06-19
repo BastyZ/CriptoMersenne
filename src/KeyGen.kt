@@ -12,7 +12,7 @@ val possibleN = listOf(
  * @param lambda security parameter
  */
 internal fun mersennePrimeBit(lambda: Int): Int {
-    val (n,h) = chooserBit(lambda)
+    val (n, h) = chooserBit(lambda)
     return 0
 }
 
@@ -22,7 +22,7 @@ private fun chooserBit(lambda: Int): Pair<Int, Int> {
 
 private fun chooseBit(lambda: Int, i: Int, h: Int): Pair<Int, Int> {
     return when {
-        conditionsBit(lambda, i, h) -> Pair(i,h)
+        conditionsBit(lambda, i, h) -> Pair(possibleN[i],h)
         possibleN[i] > h            -> chooseBit(lambda, i, h+1)
         else                        -> chooseBit(lambda, i+1, 1)
     }

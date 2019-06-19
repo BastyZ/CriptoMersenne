@@ -24,7 +24,7 @@ internal fun combinations(n: Int, h: Int): Long {
     return factorial(n).div(factorial(h) * factorial(n-h))
 }
 
-fun toBitset(bi: BigInteger): BitSet {
+fun toBitSet(bi: BigInteger): BitSet {
     val bia = bi.toByteArray()
     val l = bia.size
     val bsa = ByteArray(l + 1)
