@@ -1,6 +1,6 @@
-
 import java.math.BigInteger
 import java.util.*
+import kotlin.random.Random.Default.nextInt
 
 
 /** Returns the number of 1s (ones) in the binary representation of @sample
@@ -10,33 +10,48 @@ fun hammingWeight(sample: Long): Int = when {
     else   -> java.lang.Long.bitCount(sample)
 }
 
+fun hammingString(length: Int, weight: Int): String? {
+    when {
+        weight > length -> return null
+        else -> {
+            val set = BitSet(length)
+            while (set.cardinality() < weight) {
+                set.set(nextInt(length))
+            }
+            var setString = ""
+            for (i in 0 until length) {
+                setString += when {
+                    set.get(i) -> "1"
+                    else -> "0"
+                }
+            }
+            return setString}
+    }
+}
 
-
-internal fun factorial(num: Int): Long {
-    var response: Long = 1
+internal fun factorial(num: Int): BigInteger {
+    var response = BigInteger("1")
     for (i in 1..num) {
-        response *= i.toLong()
+        response = response.times(BigInteger(i.toString()))
     }
     return response
 }
 
-internal fun combinations(n: Int, h: Int): Long {
-    return factorial(n).div(factorial(h) * factorial(n-h))
+internal fun combinations(n: Int, h: Int): BigInteger {
+    return factorial(n).div(
+        factorial(h).times( factorial(n-h) )
+    )
 }
 
-fun toBitSet(bi: BigInteger): BitSet {
-    val bia = bi.toByteArray()
-    val l = bia.size
-    val bsa = ByteArray(l + 1)
-    System.arraycopy(bia, 0, bsa, 0, l)
-    bsa[l] = 0x01
-    return BitSet.valueOf(bsa)
+fun aBigInteger(str: String): BigInteger {
+    return BigInteger(str, 2)
 }
 
-fun toBigInteger(bs: BitSet): BigInteger {
-    val bsa = bs.toByteArray()
-    val l = bsa.size - 0x01
-    val bia = ByteArray(l)
-    System.arraycopy(bsa, 0, bia, 0, l)
-    return BigInteger(bia)
+internal fun int(str: String, p: BigInteger): BigInteger {
+    return BigInteger(str, 2).mod(p)
+}
+
+internal fun seq(num: BigInteger): String {
+    // TODO: return seq(num)
+    return ""
 }

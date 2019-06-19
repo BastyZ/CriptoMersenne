@@ -1,3 +1,4 @@
+import java.math.BigInteger
 import kotlin.math.pow
 
 // All possible values of N such that 2^N - 1 is a Mersenne number
@@ -7,23 +8,26 @@ val possibleN = listOf(
     6972593, 13466917, 20996011, 24036583, 25964951, 30402457, 32582657, 37156667, 42643801, 4311260
 )
 
-/** Choses an mersenne exponent _n_, such that _(n over h) >= 2^λ_ and _4h² < n <= 16h²_
+// String while we lack of a better representation
+fun keyGenBit(lambda: Int): Pair<String, String> {
+    val (n, h) = mersennePrimeBit(lambda)
+    val (F, G) = Pair(hammingString(n, h)!!, hammingString(n, h)!!)
+    val p = BigInteger("2").pow(n).dec()
+    return Pair(seq( int(F, p).div(int(G, p)) ), G)
+}
+
+/** Choses an mersenne exponent _n_, such that _(n over h) >= 2^λ_ and _4h² < n <= 16h²_ and an h
  *
  * @param lambda security parameter
  */
-internal fun mersennePrimeBit(lambda: Int): Int {
-    val (n, h) = chooserBit(lambda)
-    return 0
-}
-
-private fun chooserBit(lambda: Int): Pair<Int, Int> {
-    return chooseBit(lambda,0,1)
+internal fun mersennePrimeBit(lambda: Int): Pair<Int, Int> {
+    return chooseBit(lambda,0 ,1)
 }
 
 private fun chooseBit(lambda: Int, i: Int, h: Int): Pair<Int, Int> {
     return when {
         conditionsBit(lambda, i, h) -> Pair(possibleN[i],h)
-        possibleN[i] > h            -> chooseBit(lambda, i, h+1)
+        possibleN[i] > h + 1        -> chooseBit(lambda, i, h+1)
         else                        -> chooseBit(lambda, i+1, 1)
     }
 }
@@ -33,9 +37,9 @@ private fun chooseBit(lambda: Int, i: Int, h: Int): Pair<Int, Int> {
  */
 fun conditionsBit(lambda: Int, i: Int, h: Int): Boolean {
     val n = possibleN[i]
-    val combinationCond: Boolean = combinations(n,h) >= 2f.pow(lambda).toLong()     //(n h) >= 2^λ
-    val minLevelCond: Boolean = 4*h.toFloat().pow(2) < n                        // 4h² < n
-    val maxLevelCond: Boolean = n >= 16*h.toFloat().pow(2)                      // n <= 16h²
+    val combinationCond: Boolean = combinations(n,h).toBigDecimal() >= 2f.pow(lambda).toBigDecimal()   //(n h) >= 2^λ
+    val minLevelCond: Boolean = 4*h.toFloat().pow(2) < n                                            // 4h² < n
+    val maxLevelCond: Boolean = n >= 16*h.toFloat().pow(2)                                          // n <= 16h²
 
     return  combinationCond and minLevelCond and maxLevelCond
 }
