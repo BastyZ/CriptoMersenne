@@ -66,7 +66,7 @@ private fun conditionsBit(lambda: Int, n: Int, h: Int): Boolean {
 }
 
 private fun conditionsBlock(h: Int, n: Int): Boolean {
-    val minLevelCond: Boolean = 16*h.toFloat().pow(2) >= n  // 16h² >= n
-    val maxLevelCon: Boolean = n > 10*h.toFloat().pow(2)    // n > 10h²
-    return minLevelCond and maxLevelCon
+    val maxLevelCond: Boolean = 16*h.toFloat().pow(2) >= n  // 16h² >= n
+    val minLevelCond: Boolean = n > 10*h.toFloat().pow(2)    // n > 10h²
+    return minLevelCond and maxLevelCond
 }
