@@ -1,5 +1,6 @@
 import java.math.BigInteger
 import kotlin.math.pow
+import kotlin.random.Random.Default.nextInt
 
 // All possible values of N such that 2^N - 1 is a Mersenne number
 val possibleN = listOf(
@@ -13,7 +14,17 @@ fun keyGenBit(lambda: Int): Pair<String, String> {
     val (n, h) = mersennePrimeBit(lambda)
     val (F, G) = Pair(hammingString(n, h)!!, hammingString(n, h)!!)
     val p = BigInteger("2").pow(n).dec()
-    return Pair(seq( int(F, p).div(int(G, p)) ), G)
+    return Pair(seq( int(F, p).div(int(G, p)), p, n), G)
+}
+
+fun keyGenBlock(lambda: Int): Pair<Pair<String, String>, String> {
+    val h = lambda
+    val n: Int = mersennePrimeBlock(lambda)
+    val (F, G) = Pair(hammingString(n, h)!!, hammingString(n, h)!!)
+    val R = hammingString(n, nextInt(n))!!
+
+    val pk = Pair(R,"F ∙ R + G")
+    return Pair(pk, F)
 }
 
 /** Choses an mersenne exponent _n_, such that _(n over h) >= 2^λ_ and _4h² < n <= 16h²_ and an h
@@ -24,22 +35,38 @@ internal fun mersennePrimeBit(lambda: Int): Pair<Int, Int> {
     return chooseBit(lambda,0 ,1)
 }
 
+internal fun mersennePrimeBlock(lambda: Int): Int {
+    return chooseBlock(lambda, 0)
+}
+
 private fun chooseBit(lambda: Int, i: Int, h: Int): Pair<Int, Int> {
     return when {
-        conditionsBit(lambda, i, h) -> Pair(possibleN[i],h)
+        conditionsBit(lambda, possibleN[i], h) -> Pair(possibleN[i],h)
         possibleN[i] > h + 1        -> chooseBit(lambda, i, h+1)
         else                        -> chooseBit(lambda, i+1, 1)
+    }
+}
+
+private fun chooseBlock(lambda: Int, i: Int): Int {
+    return when {
+        conditionsBlock(lambda, possibleN[i]) -> possibleN[i]
+        else -> chooseBlock(lambda, i + 1)
     }
 }
 
 /** Returns True if the conditions to a valid n and h are met for a given lambda
  *
  */
-fun conditionsBit(lambda: Int, i: Int, h: Int): Boolean {
-    val n = possibleN[i]
+private fun conditionsBit(lambda: Int, n: Int, h: Int): Boolean {
     val combinationCond: Boolean = combinations(n,h).toBigDecimal() >= 2f.pow(lambda).toBigDecimal()   //(n h) >= 2^λ
     val minLevelCond: Boolean = 4*h.toFloat().pow(2) < n                                            // 4h² < n
     val maxLevelCond: Boolean = n >= 16*h.toFloat().pow(2)                                          // n <= 16h²
 
     return  combinationCond and minLevelCond and maxLevelCond
+}
+
+private fun conditionsBlock(h: Int, n: Int): Boolean {
+    val minLevelCond: Boolean = 16*h.toFloat().pow(2) >= n  // 16h² >= n
+    val maxLevelCon: Boolean = n > 10*h.toFloat().pow(2)    // n > 10h²
+    return minLevelCond and maxLevelCon
 }
