@@ -1,3 +1,4 @@
+import javafx.scene.text.FontWeight
 import java.math.BigInteger
 import kotlin.math.pow
 import kotlin.random.Random.Default.nextInt
@@ -10,20 +11,15 @@ val possibleN = listOf(
 )
 
 // String while we lack of a better representation
-fun keyGenBit(lambda: Int): Pair<String, String> {
-    // get n and h such that 2^n - 1 is a mersenne prime and (n over h) >= 2^λ
-    val (n, h) = mersennePrimeBit(lambda)
-    // get two n-bit strings off hamming weight h
-    val (F, G) = Pair(stringGen(n, h)!!, stringGen(n, h)!!)
-    val p = BigInteger("2").pow(n).dec()                        // 2^n - 1
+fun keyGenBit(bits: Int, weight: Int): Pair<String, String> {
+    // get two bits-bit strings off hamming weight weight
+    val (F, G) = Pair(stringGen(bits, weight)!!, stringGen(bits, weight)!!)
+    val p = BigInteger("2").pow(bits).dec()                        // 2^bits - 1
     // return pk:= H = seq( int(F) / int(G) ) and sk:= G
-    return Pair(seq( intMod(F, p).div(intMod(G, p)), p, n), G)
+    return Pair(seq( intMod(F, p).div(intMod(G, p)), p, bits), G)
 }
 
-fun keyGenBlock(lambda: Int): Pair<Pair<String, String>, String> {
-    // get n and h such that 2^n - 1 is a mersenne prime and h = λ
-    val h = lambda
-    val n: Int = mersennePrimeBlock(lambda)
+fun keyGenBlock(n: Int, h: Int): Pair<Pair<String, String>, String> {
     // get two n-bit strings off hamming weight h
     val (F, G) = Pair(stringGen(n, h)!!, stringGen(n, h)!!)
     // get a n-bit random, string
