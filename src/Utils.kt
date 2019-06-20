@@ -4,10 +4,11 @@ import kotlin.random.Random.Default.nextInt
 
 
 /** Returns the number of 1s (ones) in the binary representation of @sample
+ *
+ *  @param sample: sample string
  */
-internal fun hammingWeight(sample: Long): Int = when {
-    sample < 0L -> throw IllegalArgumentException("n must be non-negative")
-    else   -> java.lang.Long.bitCount(sample)
+internal fun hammingWeight(sample: String): Int {
+    return sample.count { bit -> bit == '1' }
 }
 
 /** Generates an n-bit binary string of hamming weight h
