@@ -10,7 +10,7 @@ fun hammingWeight(sample: Long): Int = when {
     else   -> java.lang.Long.bitCount(sample)
 }
 
-fun hammingString(length: Int, weight: Int): String? {
+fun stringGen(length: Int, weight: Int): String? {
     when {
         weight > length -> return null
         else -> {

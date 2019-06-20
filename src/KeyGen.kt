@@ -14,7 +14,7 @@ fun keyGenBit(lambda: Int): Pair<String, String> {
     // get n and h such that 2^n - 1 is a mersenne prime and (n over h) >= 2^λ
     val (n, h) = mersennePrimeBit(lambda)
     // get two n-bit strings off hamming weight h
-    val (F, G) = Pair(hammingString(n, h)!!, hammingString(n, h)!!)
+    val (F, G) = Pair(stringGen(n, h)!!, stringGen(n, h)!!)
     val p = BigInteger("2").pow(n).dec()                        // 2^n - 1
     // return pk:= H = seq( int(F) / int(G) ) and sk:= G
     return Pair(seq( intMod(F, p).div(intMod(G, p)), p, n), G)
@@ -25,9 +25,9 @@ fun keyGenBlock(lambda: Int): Pair<Pair<String, String>, String> {
     val h = lambda
     val n: Int = mersennePrimeBlock(lambda)
     // get two n-bit strings off hamming weight h
-    val (F, G) = Pair(hammingString(n, h)!!, hammingString(n, h)!!)
+    val (F, G) = Pair(stringGen(n, h)!!, stringGen(n, h)!!)
     // get a n-bit random, string
-    val R = hammingString(n, nextInt(n))!!
+    val R = stringGen(n, nextInt(n))!!
     val p = BigInteger("2").pow(n).dec()                        // 2^n - 1
     val pk = Pair(R, seq(int(F).times(int(R).plus(int(G))), p, n) ) // pk := (R,F ∙ R + G)
     // return pk := (R,F ∙ R + G) := (R,T) and sk := F
