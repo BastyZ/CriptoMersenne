@@ -64,11 +64,36 @@ internal fun int(str: String): BigInteger {
  *  Seq (x) = x mod p as a n-bit string
  */
 internal fun seq(num: BigInteger, p: BigInteger, n: Int): String {
-    return num.mod(p).toBitString(n, 2)
+    return num.mod(p).toBitString(n)
 }
 
-internal fun BigInteger.toBitString(nbits: Int, radix: Int): String {
-    var string = this.toString(radix)
+internal fun BigInteger.toBitString(nbits: Int): String {
+    var string = this.toString(2)
     while (string.length < nbits) string = "0$string"
     return string
+}
+
+internal fun makeBlocks (text: String, ratio: Int): List<String> {
+    val result = emptyList<String>().toMutableList()
+    for (index in 0 until text.length - 1 step ratio) {
+        val end =  when {
+            index + ratio > text.length -> text.length
+            else -> index + ratio
+        }
+        result += text.substring(index, end)
+    }
+    return result
+}
+
+internal fun mostFrequentOf (text: String): Char {
+    var countZeros = 0
+    for (char in text) {
+        if (char == '0') {
+            countZeros++
+        }
+    }
+    return when {
+        countZeros < text.length/2 -> '1'
+        else -> '0'
+    }
 }
