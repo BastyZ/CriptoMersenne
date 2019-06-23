@@ -23,7 +23,8 @@ internal fun decode (text: String, n: Int, lambda: Int): String {
 }
 
 fun decBlock (cypherText: Pair<String, String>, sk:String, n: Int, lambda: Int): String {
-    val c1 = aBigInteger(cypherText.first).times(aBigInteger(sk))
+    val p = aBigInteger("10").pow(n).dec()
+    val c1 = aBigInteger(cypherText.first).times(aBigInteger(sk)).mod(p)
     val c2 = aBigInteger(cypherText.second)
 
     val xor = c1.xor(c2)

@@ -35,8 +35,9 @@ fun encBlock (pk: Pair<String, String>, message: String, n: Int, h: Int): Pair<S
     val A = aBigInteger(stringGen(n, h)!!)
     val (B1,B2) = Pair(aBigInteger(stringGen(n, h)!!), aBigInteger(stringGen(n, h)!!))
     val E = aBigInteger(encode(message, n))
+    val p = aBigInteger("10").pow(n).dec()
 
-    val C1: String = (A.times(aBigInteger(R))).plus(B1).toBitString(n)   // A*R + B1
-    val C2: String = (A.times(aBigInteger(T)).plus(B2)).xor(E).toBitString(n)   // (A*T+B2) xor E(m)
+    val C1: String = (A.times(aBigInteger(R))).plus(B1).mod(p).toBitString(n)   // A*R + B1
+    val C2: String = (A.times(aBigInteger(T)).plus(B2)).xor(E).mod(p).toBitString(n)   // (A*T+B2) xor E(m)
     return Pair(C1, C2)
 }
