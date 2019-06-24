@@ -1,16 +1,15 @@
 import java.math.BigInteger
 
 fun encBit(pk: String, b: Boolean, n: Int, h: Int): String {
-    val bit: String = when {
-        b -> "-1"
-        else -> "1"
-    }
-    val (A, B) =  Pair(
-        toOperableString( stringGen(n, h)!! ),
-        toOperableString( stringGen(n, h)!! )
-    )
-    return BigInteger(bit).times( A.times( toOperableString(pk).plus( B ) ) )
-        .toString(2)
+    //Chooses A,B n-bit string with hamming weight h
+    val (A,B) = Pair(stringGen(n,h)!!,stringGen(n,h)!!)
+    val message =(when{
+        b -> 1
+        else -> 0
+    })
+    // C = A.pk+B
+    val C = toOperableString(sumStrings(binaryPoint(A,pk),B)).times(BigInteger("-1").pow(message))
+    return C.toBitString(n)
 }
 
 fun encode (message: String, n: Int): String {

@@ -11,12 +11,16 @@ val possibleN = listOf(
 )
 
 // String while we lack of a better representation
-fun keyGenBit(bits: Int, weight: Int): Pair<String, String> {
-    // get two bits-bit strings off hamming weight weight
-    val (F, G) = Pair(stringGen(bits, weight)!!, stringGen(bits, weight)!!)
-    val p = BigInteger("2").pow(bits).dec()                        // 2^bits - 1
+fun keyGenBit(n: Int, h: Int): Pair<String, String> {
+    //Choose a mersenne prime p and integer h
+    val p = 2.toBigInteger().pow(n).minus(BigInteger.ONE)
+    //Choose F,G n-bit string of HammingWeigth h
+    val F = stringGen(n,h)!!
+    val G = stringGen(n,h)!!
     // return pk:= H = seq( int(F) / int(G) ) and sk:= G
-    return Pair(seq( intMod(F, p).div(intMod(G, p)), p, bits), G)
+    val pk = seq(intMod(F,p).div(intMod(G,p)),p,n)
+    val sk = G
+    return Pair(pk,sk)
 }
 
 fun keyGenBlock(n: Int, h: Int): Pair<Pair<String, String>, String> {

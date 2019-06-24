@@ -1,11 +1,29 @@
 import kotlin.math.pow
 
-fun decBit(c: String, sk:String, n:Int, h: Int): Boolean? {
-    val d = hammingWeight(c).toFloat()
-    return when {
-        d <= 2*h.toFloat().pow(2)       -> false    // d <= 2h
-        d >= n - 2*h.toFloat().pow(2)   -> true     // d >= n - 2h²
+fun decBit(C: String, sk:String, n:Int, h: Int): Boolean? {
+    val polarity = when{
+        C[0] == '-' -> -1
+        else -> 1
+    }
+    val newC = when{
+        C[0] == '-' -> C.subSequence(1,C.length)
+        else -> C
+    }.toString()
+    val D = binaryPoint(newC,sk)
+    //Ham(C∙SK) = d
+    val d = hammingWeight(D)
+    val result = when {
+        d <= 2*(h.toFloat().pow(2)) -> false     // d <= 2h
+        d >= n - 2*(h.toFloat().pow(2)) -> true  // d >= n - 2h²
         else -> null
+    }
+    return when {
+        polarity < 0 -> when {
+            result == true -> false
+            result == false -> true
+            else -> null
+        }
+        else -> result
     }
 }
 
