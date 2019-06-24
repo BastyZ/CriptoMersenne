@@ -1,3 +1,4 @@
+import java.lang.IllegalArgumentException
 import java.math.BigInteger
 import java.util.*
 import kotlin.random.Random.Default.nextInt
@@ -52,7 +53,7 @@ internal fun combinations(n: Int, h: Int): BigInteger = when {
     }
 }
 
-fun aBigInteger(str: String): BigInteger {
+fun toOperableString(str: String): BigInteger {
     return BigInteger(str, 2)
 }
 
@@ -73,9 +74,18 @@ internal fun seq(num: BigInteger, p: BigInteger, n: Int): String {
 }
 
 internal fun BigInteger.toBitString(nbits: Int): String {
-    var string = this.toString(2)
-    while (string.length < nbits) string = "0$string"
-    return string
+    var result = ""
+    val num = when {
+        this < BigInteger("0") -> {
+            result = "-" + this.times(BigInteger("-1")).toBitString(nbits)
+        }
+        else -> {
+            var string = this.toString(2)
+            while (string.length < nbits) string = "0$string"
+            result = string
+        }
+    }
+    return result
 }
 
 internal fun makeBlocks (text: String, ratio: Int): List<String> {
@@ -101,4 +111,64 @@ internal fun mostFrequentOf (text: String): Char {
         countZeros < text.length/2 -> '1'
         else -> '0'
     }
+}
+
+//OPERADORES CON STRINGS
+//Producto punto X ∙ Y
+fun binaryPoint(X:String, Y:String): String {
+    val s: String = when {
+        X.length != Y.length -> throw IllegalArgumentException("Producto punto de vectores con distinto largo")
+        else -> {
+            var result = ""
+            var carry = "0"
+            for (i in 0..(X.length - 1)) {
+                var Z = when {
+                    X[i] == '1' && Y[i] == '1' -> "1"
+                    else -> "0"
+                }
+                result += Z
+            }
+            return result
+        }
+    }
+    return s
+}
+
+fun sumStrings(X:String, Y:String): String {
+    val s: String = when {
+        X.length != Y.length -> throw IllegalArgumentException("Producto punto de vectores con distinto largo")
+        else -> {
+            var result = ""
+            var carry = '0'
+            for (i in 0..(X.length - 1)) {
+                val sum = charSum(X[i],Y[i],carry)
+                carry = sum.second
+                result += sum.first
+            }
+            return result
+        }
+    }
+    return s
+}
+
+fun charSum(A:Char, B:Char, carry:Char): Pair<Char,Char> {
+     var result = when {
+        carry == '1' -> {
+            when {
+                A == '0' &&  B == '0' -> Pair('1','0')
+                A == '0' &&  B == '1' -> Pair('1','1')
+                A == '1' &&  B == '0' -> Pair('1','1')
+                else -> Pair('0','1')
+            }
+        }
+        else -> {
+            when {
+                A == '0' &&  B == '0' -> Pair('0','0')
+                A == '0' &&  B == '1' -> Pair('1','0')
+                A == '1' &&  B == '0' -> Pair('1','0')
+               else -> Pair('1','1')
+            }
+        }
+    }
+    return result
 }

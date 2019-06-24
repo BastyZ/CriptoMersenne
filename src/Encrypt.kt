@@ -6,10 +6,10 @@ fun encBit(pk: String, b: Boolean, n: Int, h: Int): String {
         else -> "1"
     }
     val (A, B) =  Pair(
-        aBigInteger( stringGen(n, h)!! ),
-        aBigInteger( stringGen(n, h)!! )
+        toOperableString( stringGen(n, h)!! ),
+        toOperableString( stringGen(n, h)!! )
     )
-    return BigInteger(bit).times( A.times( aBigInteger(pk).plus( B ) ) )
+    return BigInteger(bit).times( A.times( toOperableString(pk).plus( B ) ) )
         .toString(2)
 }
 
@@ -32,12 +32,12 @@ fun encode (message: String, n: Int): String {
 
 fun encBlock (pk: Pair<String, String>, message: String, n: Int, h: Int): Pair<String, String> {
     val (R, T) = pk
-    val A = aBigInteger(stringGen(n, h)!!)
-    val (B1,B2) = Pair(aBigInteger(stringGen(n, h)!!), aBigInteger(stringGen(n, h)!!))
-    val E = aBigInteger(encode(message, n))
-    val p = aBigInteger("10").pow(n).dec()
+    val A = toOperableString(stringGen(n, h)!!)
+    val (B1,B2) = Pair(toOperableString(stringGen(n, h)!!), toOperableString(stringGen(n, h)!!))
+    val E = toOperableString(encode(message, n))
+    val p = toOperableString("10").pow(n).dec()
 
-    val C1: String = (A.times(aBigInteger(R))).plus(B1).mod(p).toBitString(n)   // A*R + B1
-    val C2: String = (A.times(aBigInteger(T)).plus(B2)).xor(E).mod(p).toBitString(n)   // (A*T+B2) xor E(m)
+    val C1: String = (A.times(toOperableString(R))).plus(B1).mod(p).toBitString(n)   // A*R + B1
+    val C2: String = (A.times(toOperableString(T)).plus(B2)).xor(E).mod(p).toBitString(n)   // (A*T+B2) xor E(m)
     return Pair(C1, C2)
 }

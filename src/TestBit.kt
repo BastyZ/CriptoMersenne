@@ -2,7 +2,7 @@ import java.math.BigInteger
 import kotlin.math.pow
 
 fun main(args: Array<String>) {
-    val lambda = 40
+    val lambda = 20
     val (n, h) = mersennePrimeBit(lambda)
     val (pk,sk) = bitKeyGen(lambda, n, h)
     val message = true
@@ -46,29 +46,41 @@ fun bitEncryption(pk:String, b:Boolean, n:Int, h:Int): String{
     println("\t Does B meet this conditions? ${B.length == n && hammingWeight(B)==h}")
 
     val message =(when{
-        b -> "1"
-        else -> "0"
-    }).toInt()
-    println("We encrypt the bit $message making (-1)^bit * (A.pk + B)")
-    // H = A.pk+B
-    val H = (aBigInteger(A).times(aBigInteger(pk))).plus(aBigInteger(B))
-    println("\t (A.pk + B) of ${H.bitLength()}")
-    val C = (BigInteger("-1").pow(message)).times(H)
-    println("\t Cypher text of ${C.bitLength()}")
+        b -> 1
+        else -> 0
+    })
+    println("We encrypt the bit $message making (-1)^bit * (A∙pk + B)")
+    // C = A.pk+B
+    val C = toOperableString(sumStrings(binaryPoint(A,pk),B)).times(BigInteger("-1").pow(message))
+    println("\t (A∙pk + B) of ${C.bitLength()}")
     return C.toBitString(n)
 }
 
 fun bitDecription(sk: String, C: String, n: Int, h:Int): String {
-    val D = aBigInteger(C).times(aBigInteger(sk))
-    println("We decrypt a cypher text (${C.length} bits) with the Secret key")
-    val d = hammingWeight(D.toBitString(n))
-    println("\t C.SK of lenght ${D.bitLength()}")
-    println("\t Ham(C.SK) = $d")
+    val polarity = when{
+        C[0] == '-' -> -1
+        else -> 1
+    }
+    val newC = when{
+        C[0] == '-' -> C.subSequence(1,C.length)
+        else -> C
+    }.toString()
+    val D = binaryPoint(newC,sk)
+    println("We decrypt a cypher text (${newC.length} bits) with the Secret key")
+    val d = hammingWeight(D)
+    println("\t C∙SK of lenght ${D.length}")
+    println("\t Ham(C∙SK) = $d")
     val result = when {
         d <= 2*(h.toFloat().pow(2)) -> "0"
         d >= n - 2*(h.toFloat().pow(2)) -> "1"
-        else -> ""
+        else -> "ERROR"
     }
-    return result
+    return when {
+        polarity < 0 -> when {
+            result == "0" -> "1"
+            else -> "0"
+        }
+        else -> result
+    }
 }
 
