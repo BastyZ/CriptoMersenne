@@ -62,10 +62,6 @@ internal fun intMod(str: String, p: BigInteger): BigInteger {
     return BigInteger(str, 2).mod(p)
 }
 
-internal fun int(str: String): BigInteger {
-    return BigInteger(str, 2)
-}
-
 /**
  *  Seq (x) = x mod p as a n-bit string
  */
@@ -136,7 +132,7 @@ fun binaryPoint(X:String, Y:String): String {
 
 fun sumStrings(X:String, Y:String): String {
     val s: String = when {
-        X.length != Y.length -> throw IllegalArgumentException("Producto punto de vectores con distinto largo")
+        X.length != Y.length -> throw IllegalArgumentException("Suma de vectores con distinto largo")
         else -> {
             var result = ""
             var carry = '0'
@@ -171,4 +167,24 @@ fun charSum(A:Char, B:Char, carry:Char): Pair<Char,Char> {
         }
     }
     return result
+}
+
+fun xorString(X:String, Y:String): String {
+    val s: String = when {
+        X.length != Y.length -> throw IllegalArgumentException("XOR de vectores con distinto largo")
+        else -> {
+            var result = ""
+            for (i in 0..(X.length - 1)) {
+                val ans = when {
+                    X[i] == '0' && Y[i] == '0' -> '0'
+                    X[i] == '0' && Y[i] == '1' -> '1'
+                    X[i] == '1' && Y[i] == '0' -> '1'
+                    else -> '0'
+                }
+                result += ans
+            }
+            return result
+        }
+    }
+    return s
 }

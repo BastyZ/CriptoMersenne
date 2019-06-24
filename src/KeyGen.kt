@@ -24,14 +24,22 @@ fun keyGenBit(n: Int, h: Int): Pair<String, String> {
 }
 
 fun keyGenBlock(n: Int, h: Int): Pair<Pair<String, String>, String> {
-    // get two n-bit strings off hamming weight h
-    val (F, G) = Pair(stringGen(n, h)!!, stringGen(n, h)!!)
-    // get a n-bit random, string
-    val R = stringGen(n, nextInt(n))!!
-    val p = BigInteger("2").pow(n).dec()                        // 2^n - 1
-    val pk = Pair(R, seq(int(F).times(int(R).plus(int(G))), p, n) ) // pk := (R,F ∙ R + G)
-    // return pk := (R,F ∙ R + G) := (R,T) and sk := F
-    return Pair(pk, F)
+    // Given lambda
+    //Choose a mersenne prime p such that h=λ
+    val p = 2.toBigInteger().pow(n).minus(BigInteger.ONE)
+    val cond1 = 16*(h.toFloat().pow(2))>=n
+    val cond2 = n > 10*(h.toFloat().pow(2))
+
+    //Choose F,G n-bit string of HammingWeigth h
+    val F = stringGen(n,h)!!
+    val G = stringGen(n,h)!!
+    val R = stringGen(n,h)!!
+
+    //T=F∙R + G
+    val T = sumStrings(binaryPoint(F,R), G)
+    val pk = Pair(R,T)
+    val sk = G
+    return Pair(pk,sk)
 }
 
 /** Choses an mersenne exponent _n_, such that _(n over h) >= 2^λ_ and _4h² < n <= 16h²_ and an h

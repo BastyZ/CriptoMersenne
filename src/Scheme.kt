@@ -27,9 +27,9 @@ fun main(args: Array<String>) {
     val (pk,sk) = keyGenBlock(n,lambda)
     println("\t Public key (R,T) each one of ${pk.first.length} and secret key of ${sk.length}")
     val encodeBlock = encBlock(pk, message, n, lambda)
-    println("\t Encoding $message of size ${message.length}... \n\t\t gives cyphertext (C1,C2) of ${encodeBlock.first.length} each one")
+    println("\t Encoding message of size ${message.length}... \n\t\t gives cyphertext (C1,C2) of ${encodeBlock.first.length} each one")
     val decodeBlock = decBlock(encodeBlock, sk, n, lambda)
-    println("\t Decoding cyphertext...\n\t\t gives $decodeBlock of size ${decodeBlock.length}")
+    println("\t Decoding cyphertext...\n\t\t gives plain text of size ${decodeBlock.length}")
     println("\t ¿Es correcto el decifrado?: ${message == decodeBlock}")
     if (message != decodeBlock){
         println(message)

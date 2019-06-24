@@ -34,17 +34,15 @@ internal fun decode (text: String, n: Int, lambda: Int): String {
     }
     val blocks = makeBlocks(text, ratio)
     var result = ""
-    for (block in blocks) {
-        result += mostFrequentOf(block)
-    }
+    for (block in blocks) result += mostFrequentOf(block)
+    if (result.length > lambda) return result.substring(0,lambda)
     return result
 }
 
 fun decBlock (cypherText: Pair<String, String>, sk:String, n: Int, lambda: Int): String {
-    val p = toOperableString("10").pow(n).dec()
-    val c1 = toOperableString(cypherText.first).times(toOperableString(sk)).mod(p)
-    val c2 = toOperableString(cypherText.second)
-
-    val xor = c1.xor(c2)
-    return decode(xor.toBitString(n), n, lambda)
+    val (C1,C2) = cypherText
+    // SK∙C1⊕C2
+    val args = xorString(binaryPoint(sk,C1),C2)
+    // plaintext = D(SK∙C1⊕C2)
+    return decode(args,n,lambda)
 }

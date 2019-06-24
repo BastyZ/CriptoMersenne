@@ -30,13 +30,15 @@ fun encode (message: String, n: Int): String {
 }
 
 fun encBlock (pk: Pair<String, String>, message: String, n: Int, h: Int): Pair<String, String> {
-    val (R, T) = pk
-    val A = toOperableString(stringGen(n, h)!!)
-    val (B1,B2) = Pair(toOperableString(stringGen(n, h)!!), toOperableString(stringGen(n, h)!!))
-    val E = toOperableString(encode(message, n))
-    val p = toOperableString("10").pow(n).dec()
-
-    val C1: String = (A.times(toOperableString(R))).plus(B1).mod(p).toBitString(n)   // A*R + B1
-    val C2: String = (A.times(toOperableString(T)).plus(B2)).xor(E).mod(p).toBitString(n)   // (A*T+B2) xor E(m)
-    return Pair(C1, C2)
+    //Chooses A,B n-bit string with hamming weight h
+    val (A,B1) = Pair(stringGen(n,h)!!,stringGen(n,h)!!)
+    val B2 = stringGen(n,h)!!
+    // C1 = A.R+B1
+    val C1 = sumStrings(binaryPoint(A,pk.first), B1)
+    // E(m)
+    val E = encode(message,n)
+    val C= sumStrings(binaryPoint(A,pk.second), B2)
+    // C2 = (A.T+B2) xor E(m)
+    val C2 = xorString(C,E)
+    return Pair(C1,C2)
 }
