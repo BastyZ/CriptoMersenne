@@ -33,18 +33,23 @@ internal fun stringGen(length: Int, weight: Int): String? {
     }
 }
 
-internal fun factorial(num: Int): BigInteger {
-    var response = BigInteger("1")
-    for (i in 1..num) {
-        response = response.times(BigInteger(i.toString()))
+internal fun factorial(n: Int): BigInteger = when{
+    n<0 -> throw java.lang.IllegalArgumentException("No negative")
+    else -> {
+        var ans = BigInteger("1")
+        for (i in 2..n) ans = ans.times(BigInteger(i.toString()))
+        ans
     }
-    return response
 }
 
-internal fun combinations(n: Int, h: Int): BigInteger {
-    return factorial(n).div(
-        factorial(h).times( factorial(n-h) )
-    )
+internal fun combinations(n: Int, h: Int): BigInteger = when {
+    n<0 || h<0 -> throw java.lang.IllegalArgumentException("n or h are negatives")
+    n == h -> BigInteger("1")
+    else -> {
+        var ans = BigInteger("1")
+        for (i in n-h+1..n) ans = ans.times(BigInteger(i.toString()))
+        ans / factorial(h)
+    }
 }
 
 fun aBigInteger(str: String): BigInteger {
