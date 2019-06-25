@@ -1,8 +1,6 @@
-import javafx.scene.text.FontWeight
 import java.math.BigDecimal
 import java.math.BigInteger
 import kotlin.math.pow
-import kotlin.random.Random.Default.nextInt
 
 // All possible values of N such that 2^N - 1 is a Mersenne number
 val possibleN = listOf(
@@ -16,10 +14,10 @@ fun keyGenBit(n: Int, h: Int): Pair<String, String> {
     //Choose a mersenne prime p and integer h
     val p = 2.toBigInteger().pow(n).minus(BigInteger.ONE)
     //Choose F,G n-bit string of HammingWeigth h
-    val F = stringGen(n,h)!!
-    val G = stringGen(n,h)!!
+    val F = stringGen(n, h)!!
+    val G = stringGen(n, h)!!
     // return pk:= H = seq( int(F) / int(G) ) and sk:= G
-    val pk = seq(intMod(F,p).div(intMod(G,p)),p,n)
+    val pk = seq(intMod(F, p).div(intMod(G, p)), p, n)
     val sk = G
     return Pair(pk,sk)
 }
@@ -27,17 +25,14 @@ fun keyGenBit(n: Int, h: Int): Pair<String, String> {
 fun keyGenBlock(n: Int, h: Int): Pair<Pair<String, String>, String> {
     // Given lambda
     //Choose a mersenne prime p such that h=λ
-    val p = 2.toBigInteger().pow(n).minus(BigInteger.ONE)
-    val cond1 = 16*(h.toFloat().pow(2))>=n
-    val cond2 = n > 10*(h.toFloat().pow(2))
 
     //Choose F,G n-bit string of HammingWeigth h
-    val F = stringGen(n,h)!!
-    val G = stringGen(n,h)!!
-    val R = stringGen(n,h)!!
+    val F = stringGen(n, h)!!
+    val G = stringGen(n, h)!!
+    val R = stringGen(n, h)!!
 
     //T=F∙R + G
-    val T = sumStrings(binaryPoint(F,R), G)
+    val T = sumStrings(binaryPoint(F, R), G)
     val pk = Pair(R,T)
     val sk = G
     return Pair(pk,sk)
@@ -48,7 +43,7 @@ fun keyGenBlock(n: Int, h: Int): Pair<Pair<String, String>, String> {
  * @param lambda security parameter
  */
 internal fun mersennePrimeBit(lambda: Int): Pair<Int, Int> {
-    return chooseBit(lambda,0 ,1)
+    return chooseBit(lambda, 0, 1)
 }
 
 internal fun mersennePrimeBlock(lambda: Int): Int {
@@ -58,8 +53,8 @@ internal fun mersennePrimeBlock(lambda: Int): Int {
 private fun chooseBit(lambda: Int, i: Int, h: Int): Pair<Int, Int> {
     return when {
         conditionsBit(lambda, possibleN[i], h)  -> Pair(possibleN[i],h)
-        possibleN[i] > h + 1                    -> chooseBit(lambda, i, h+1)
-        else                                    -> chooseBit(lambda, i+1, 1)
+        possibleN[i] > h + 1                    -> chooseBit(lambda, i, h + 1)
+        else                                    -> chooseBit(lambda, i + 1, 1)
     }
 }
 
@@ -74,7 +69,7 @@ private fun chooseBlock(lambda: Int, i: Int): Int {
  *
  */
 private fun conditionsBit(lambda: Int, n: Int, h: Int): Boolean {
-    val combinationCond: Boolean = combinations(n,h).toBigDecimal() >= BigDecimal("2").pow(lambda)   //(n h) >= 2^λ
+    val combinationCond: Boolean = combinations(n, h).toBigDecimal() >= BigDecimal("2").pow(lambda)//(n h) >= 2^λ
     val minLevelCond: Boolean = 4*h.toFloat().pow(2) < n                                            // 4h² < n
     val maxLevelCond: Boolean = n >= 16*h.toFloat().pow(2)                                          // n <= 16h²
 

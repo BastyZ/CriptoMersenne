@@ -1,4 +1,3 @@
-import java.lang.IllegalArgumentException
 import java.math.BigInteger
 import java.util.*
 import kotlin.random.Random.Default.nextInt
@@ -26,8 +25,8 @@ internal fun stringGen(length: Int, weight: Int): String? {
             var setString = ""
             for (i in 0 until length) {
                 setString += when {
-                    set.get(i) -> "1"
-                    else -> "0"
+                    set.get(i)  -> "1"
+                    else        -> "0"
                 }
             }
             return setString}
@@ -76,8 +75,8 @@ internal fun seq(num: BigInteger, p: BigInteger, n: Int): String {
 }
 
 internal fun BigInteger.toBitString(nbits: Int): String {
-    var result = ""
-    val num = when {
+    val result: String
+    when {
         this < BigInteger("0") -> {
             result = "-" + this.times(BigInteger("-1")).toBitString(nbits)
         }
@@ -95,7 +94,7 @@ internal fun makeBlocks (text: String, ratio: Int): List<String> {
     for (index in 0 until text.length - 1 step ratio) {
         val end =  when {
             index + ratio > text.length -> text.length
-            else -> index + ratio
+            else                        -> index + ratio
         }
         result += text.substring(index, end)
     }
@@ -118,13 +117,12 @@ internal fun mostFrequentOf (text: String): Char {
 //OPERADORES CON STRINGS
 //Producto punto X ∙ Y
 fun binaryPoint(X:String, Y:String): String {
-    val s: String = when {
+    when {
         X.length != Y.length -> throw IllegalArgumentException("Producto punto de vectores con distinto largo")
         else -> {
             var result = ""
-            var carry = "0"
-            for (i in 0..(X.length - 1)) {
-                var Z = when {
+            for (i in 0 until X.length) {
+                val Z = when {
                     X[i] == '1' && Y[i] == '1' -> "1"
                     else -> "0"
                 }
@@ -133,29 +131,27 @@ fun binaryPoint(X:String, Y:String): String {
             return result
         }
     }
-    return s
 }
 
 fun sumStrings(X:String, Y:String): String {
-    val s: String = when {
+    when {
         X.length != Y.length -> throw IllegalArgumentException("Suma de vectores con distinto largo")
         else -> {
             var result = ""
             var carry = '0'
-            for (i in 0..(X.length - 1)) {
-                val sum = charSum(X[i],Y[i],carry)
+            for (i in 0 until X.length) {
+                val sum = charSum(X[i], Y[i], carry)
                 carry = sum.second
                 result += sum.first
             }
             return result
         }
     }
-    return s
 }
 
 fun charSum(A:Char, B:Char, carry:Char): Pair<Char,Char> {
-     var result = when {
-        carry == '1' -> {
+    return when(carry) {
+        '1' -> {
             when {
                 A == '0' &&  B == '0' -> Pair('1','0')
                 A == '0' &&  B == '1' -> Pair('1','1')
@@ -168,19 +164,18 @@ fun charSum(A:Char, B:Char, carry:Char): Pair<Char,Char> {
                 A == '0' &&  B == '0' -> Pair('0','0')
                 A == '0' &&  B == '1' -> Pair('1','0')
                 A == '1' &&  B == '0' -> Pair('1','0')
-               else -> Pair('1','1')
+                else -> Pair('1','1')
             }
         }
     }
-    return result
 }
 
 fun xorString(X:String, Y:String): String {
-    val s: String = when {
+    when {
         X.length != Y.length -> throw IllegalArgumentException("XOR de vectores con distinto largo")
         else -> {
             var result = ""
-            for (i in 0..(X.length - 1)) {
+            for (i in 0 until X.length) {
                 val ans = when {
                     X[i] == '0' && Y[i] == '0' -> '0'
                     X[i] == '0' && Y[i] == '1' -> '1'
@@ -192,5 +187,4 @@ fun xorString(X:String, Y:String): String {
             return result
         }
     }
-    return s
 }

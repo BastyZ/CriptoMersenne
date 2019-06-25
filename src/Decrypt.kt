@@ -9,7 +9,7 @@ fun decBit(C: String, sk:String, n:Int, h: Int): Boolean? {
         C[0] == '-' -> C.subSequence(1,C.length)
         else -> C
     }.toString()
-    val D = binaryPoint(newC,sk)
+    val D = binaryPoint(newC, sk)
     //Ham(C∙SK) = d
     val d = hammingWeight(D)
     val result = when {
@@ -42,7 +42,7 @@ internal fun decode (text: String, n: Int, lambda: Int): String {
 fun decBlock (cypherText: Pair<String, String>, sk:String, n: Int, lambda: Int): String {
     val (C1,C2) = cypherText
     // SK∙C1⊕C2
-    val args = xorString(binaryPoint(sk,C1),C2)
+    val args = xorString(binaryPoint(sk, C1), C2)
     // plaintext = D(SK∙C1⊕C2)
-    return decode(args,n,lambda)
+    return decode(args, n, lambda)
 }
