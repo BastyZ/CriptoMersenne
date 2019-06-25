@@ -1,4 +1,5 @@
 import javafx.scene.text.FontWeight
+import java.math.BigDecimal
 import java.math.BigInteger
 import kotlin.math.pow
 import kotlin.random.Random.Default.nextInt
@@ -73,7 +74,7 @@ private fun chooseBlock(lambda: Int, i: Int): Int {
  *
  */
 private fun conditionsBit(lambda: Int, n: Int, h: Int): Boolean {
-    val combinationCond: Boolean = combinations(n,h).toBigDecimal() >= 2f.pow(lambda).toBigDecimal()   //(n h) >= 2^λ
+    val combinationCond: Boolean = combinations(n,h).toBigDecimal() >= BigDecimal("2").pow(lambda)   //(n h) >= 2^λ
     val minLevelCond: Boolean = 4*h.toFloat().pow(2) < n                                            // 4h² < n
     val maxLevelCond: Boolean = n >= 16*h.toFloat().pow(2)                                          // n <= 16h²
 

@@ -19,7 +19,7 @@ fun encode (message: String, n: Int): String {
     }
     var result = ""
     for (bit in message) {
-        for (index in 0..ratio){
+        for (index in 0 until ratio){
             result += bit
         }
     }
