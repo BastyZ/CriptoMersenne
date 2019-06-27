@@ -16,6 +16,7 @@ fun main() {
 
     println("-------------BLock message test---------------")
     val message: String = stringGen(lambda, lambda / 2)!!
+    println("The message is \t\t$message")
     n = mersennePrimeBlock(lambda)
     h = lambda
     println("Init: for λ = $lambda n is $n and h is $h | ratio ${n/lambda}")
@@ -26,6 +27,8 @@ fun main() {
     val decodeBlock = decBlock(encodeBlock, sk, n, lambda)
     println("\t Decoding cyphertext...\n\t\t gives plain text of size ${decodeBlock.length}")
     println("\t ¿Es correcto el decifrado?: ${message == decodeBlock}")
+    println(" decrypted text \t$decodeBlock")
+    println("plaintext message\t$message")
     if (message != decodeBlock){
         println(message)
         println(decodeBlock)
