@@ -11,10 +11,9 @@ fun main() {
     val obtaintedText = blockDecription(sk,cypherText,n,lambda)
     val result = messageBlock == obtaintedText
     println(">> Encryption/Decryption result: $result")
-    if (!result){
-        println(messageBlock)
-        println(obtaintedText)
-    }
+    println(">> Message v/s Decrypted Text")
+    println(messageBlock)
+    println(obtaintedText)
 }
 
 fun blockKeyGen(lambda: Int, n:Int, h: Int): Pair<Pair<String,String>, String> {
