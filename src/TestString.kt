@@ -1,14 +1,15 @@
 import java.math.BigInteger
 
 fun main(){
-    val message = "super secret"
+    val message = "this is super secret"
     println("The message is \t\t$message")
-    val bits_message = stringtToBits(message)
+    val bits_message = stringtToBits(message, 100)
+    val binary = BigInteger(message.toByteArray()).toString(2)
     val lambda:Int = when {
         bits_message.length > 100 -> 100
         else -> bits_message.length
     }
-    println("\tbinary representation of the message has ${bits_message.length} bits, and ${(bits_message.length/lambda).toInt()} block(s)")
+    println("\tbinary representation of the message has ${binary.length} bits, and ${(bits_message.length/lambda).toInt()} block(s)")
     var n = mersennePrimeBlock(lambda)
     println("KeyGen: for λ = $lambda n is $n and h is $lambda | ratio ${n/lambda}")
     val (pk, sk) = keyGenBlock(n,lambda)
@@ -17,14 +18,20 @@ fun main(){
     println("\t Encoding message of size ${message.length}... \n\t\t gives cyphertext (C1,C2) of ${cypherText.first.length} each one")
     val plainText = dec(sk, cypherText, lambda, n)
     println("\t Decoding cyphertext...\n\t\t gives plain text of size ${plainText.length}")
-    println("\t ¿Es correcto el decifrado?: ${bits_message == plainText}")
+
+    println("\t ¿Es correcto el decifrado?: ${binary == plainText}")
     println("decrypted text: \t$plainText")
-    println("binary message: \t$bits_message")
+    println("binary message: \t$binary")
 }
 
-fun stringtToBits (s: String): String{
+fun stringtToBits (s: String, n: Int): String{
+    val space = BigInteger("$".toByteArray()).toString(2)
     val binary = BigInteger(s.toByteArray()).toString(2)
-    return binary
+    var new = binary + space
+    while ((new.length)%n != 0){
+        new += '0'
+    }
+    return new
 }
 
 fun enc(pk:Pair<String,String>, message: String, lambda: Int, n: Int): Pair<String, String> {
@@ -44,8 +51,8 @@ fun enc(pk:Pair<String,String>, message: String, lambda: Int, n: Int): Pair<Stri
 }
 
 fun dec(sk: String, cypherText: Pair<String,String>, lambda:Int, n:Int): String{
+    var C = ""
     if (cypherText.first.length > lambda) {
-        var C = ""
         for (i in 0 until cypherText.first.length step n){
             var end = when {
                 i+n >= cypherText.first.length -> cypherText.first.length
@@ -56,10 +63,15 @@ fun dec(sk: String, cypherText: Pair<String,String>, lambda:Int, n:Int): String{
             var plainText = decBlock(Pair(C1,C2),sk,n,lambda)
             C += plainText
         }
-        return C
     }
     else {
-        return decBlock(cypherText,sk,n,lambda)
+        C = decBlock(cypherText,sk,n,lambda)
     }
-
+    val space = BigInteger("$".toByteArray()).toString(2)
+    val index = C.findLastAnyOf(listOf(space))!!
+    if (index != null){
+        return C.substring(0,index.first)
+    } else {
+        return C
+    }
 }
