@@ -2,7 +2,7 @@ import kotlin.math.pow
 
 fun main() {
 
-    val lambda = 40
+    val lambda = 80
     val h = lambda
     val n = mersennePrimeBlock(lambda)
     val (pk,sk) = blockKeyGen(lambda, n, h)

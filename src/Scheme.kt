@@ -29,9 +29,5 @@ fun main() {
     println("\t ¿Es correcto el decifrado?: ${message == decodeBlock}")
     println(" decrypted text \t$decodeBlock")
     println("plaintext message\t$message")
-    if (message != decodeBlock){
-        println(message)
-        println(decodeBlock)
-    }
 
 }
