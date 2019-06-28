@@ -1,12 +1,13 @@
 import java.math.BigInteger
 
 fun main(){
-    val message = "this is super secret"
+    val lambda_limit = 80
+    val message = "Potato is the best word in the world"
     println("The message is \t\t$message")
-    val bits_message = stringtToBits(message, 100)
+    val bits_message = stringtToBits(message, lambda_limit)
     val binary = BigInteger(message.toByteArray()).toString(2)
     val lambda:Int = when {
-        bits_message.length > 100 -> 100
+        bits_message.length > lambda_limit -> lambda_limit
         else -> bits_message.length
     }
     println("\tbinary representation of the message has ${binary.length} bits, and ${(bits_message.length/lambda).toInt()} block(s)")
@@ -15,7 +16,7 @@ fun main(){
     val (pk, sk) = keyGenBlock(n,lambda)
     println("\t Public key (R,T) each one of ${pk.first.length} and secret key of ${sk.length}")
     val cypherText = enc(pk, bits_message, lambda, n)
-    println("\t Encoding message of size ${message.length}... \n\t\t gives cyphertext (C1,C2) of ${cypherText.first.length} each one")
+    println("\t Encoding message of size ${binary.length}... \n\t\t gives cyphertext (C1,C2) of ${cypherText.first.length} each one")
     val plainText = dec(sk, cypherText, lambda, n)
     println("\t Decoding cyphertext...\n\t\t gives plain text of size ${plainText.length}")
 
