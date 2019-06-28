@@ -17,8 +17,8 @@ fun main(){
     val plainText = dec(sk, cypherText, lambda, n)
     println("\t Decoding cyphertext...\n\t\t gives plain text of size ${plainText.length}")
     println("\t ¿Es correcto el decifrado?: ${bits_message == plainText}")
-    println(" decrypted text \t$plainText")
-    println("plaintext message\t$bits_message")
+    println("decrypted text: \t$plainText")
+    println("binary message: \t$bits_message")
 }
 
 fun stringtToBits (s: String): String{
