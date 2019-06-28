@@ -1,14 +1,14 @@
 import java.math.BigInteger
 
 fun main(){
-    val message = "potato is the best word in the world"
+    val message = "super secret"
     println("The message is \t\t$message")
     val bits_message = stringtToBits(message)
     val lambda:Int = when {
-        bits_message.length > 80 -> 80
+        bits_message.length > 100 -> 100
         else -> bits_message.length
     }
-    println("\tbinary representation of the message has ${bits_message.length} bits")
+    println("\tbinary representation of the message has ${bits_message.length} bits, and ${(bits_message.length/lambda).toInt()} block(s)")
     var n = mersennePrimeBlock(lambda)
     println("KeyGen: for λ = $lambda n is $n and h is $lambda | ratio ${n/lambda}")
     val (pk, sk) = keyGenBlock(n,lambda)
@@ -30,7 +30,7 @@ fun stringtToBits (s: String): String{
 fun enc(pk:Pair<String,String>, message: String, lambda: Int, n: Int): Pair<String, String> {
     var C1 = ""
     var C2 = ""
-    for (i in 0 until message.length-1 step lambda) {
+    for (i in 0 until message.length step lambda) {
         var end = when {
             i+lambda >= message.length -> message.length
             else -> i+lambda
@@ -46,7 +46,7 @@ fun enc(pk:Pair<String,String>, message: String, lambda: Int, n: Int): Pair<Stri
 fun dec(sk: String, cypherText: Pair<String,String>, lambda:Int, n:Int): String{
     if (cypherText.first.length > lambda) {
         var C = ""
-        for (i in 0 until cypherText.first.length-1 step n){
+        for (i in 0 until cypherText.first.length step n){
             var end = when {
                 i+n >= cypherText.first.length -> cypherText.first.length
                 else -> i+n
