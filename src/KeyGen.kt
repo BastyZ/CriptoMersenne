@@ -50,7 +50,7 @@ internal fun mersennePrimeBlock(lambda: Int): Int {
     return chooseBlock(lambda, 0)
 }
 
-private fun chooseBit(lambda: Int, i: Int, h: Int): Pair<Int, Int> {
+private tailrec fun chooseBit(lambda: Int, i: Int, h: Int): Pair<Int, Int> {
     return when {
         conditionsBit(lambda, possibleN[i], h)  -> Pair(possibleN[i],h)
         possibleN[i] > h + 1                    -> chooseBit(lambda, i, h + 1)
@@ -58,7 +58,7 @@ private fun chooseBit(lambda: Int, i: Int, h: Int): Pair<Int, Int> {
     }
 }
 
-private fun chooseBlock(lambda: Int, i: Int): Int {
+private tailrec fun chooseBlock(lambda: Int, i: Int): Int {
     return when {
         conditionsBlock(lambda, possibleN[i])   -> possibleN[i]
         else                                    -> chooseBlock(lambda, i + 1)
