@@ -3,10 +3,31 @@ import java.math.BigInteger
 import kotlin.math.floor
 
 fun main(){
-    val lambda=20
-    val (n,w)=instanceMNCS(lambda)
-    val key=keyGenMNCS(lambda,n,w)
-    test_classic_attack(n,w,key)
+    val min_lambda = 20
+    val lambda_step = 10
+    val max_lambda = 24
+    val samples = 2
+
+    for (lambda in min_lambda..max_lambda){
+        var nr_success = 0
+        var col_ratios = arrayListOf<Int>()
+        val startAttack = System.currentTimeMillis()
+        val (n,w)=instanceMNCS(lambda)
+        for (intent in 0 until samples) {
+            val key=keyGenMNCS(lambda,n,w)
+            var timeKeyGen = System.currentTimeMillis()
+            val (success, col_ratio) = test_classic_attack(n, w, key)
+            nr_success += when{
+                success -> 1
+                else -> 0
+            }
+            col_ratios.add(col_ratio)
+        }
+        val endAttacks = System.currentTimeMillis()
+        println(">> n \tw \tb \ttrials \tsuccess(%) \ttime")
+        println("$n \t $w \tb \t$samples \t${nr_success.toDouble()/samples.toDouble()} \t${endAttacks - startAttack}")
+    }
+
 }
 
 fun test_classic_attack(n:Int, w:Int, key:Pair<String,String>): Pair<Boolean, Int> {
@@ -17,6 +38,8 @@ fun test_classic_attack(n:Int, w:Int, key:Pair<String,String>): Pair<Boolean, In
     val b=Ds.second
     val (nX,wX)=Gs.first
     val (nY,wY)=Gs.second
+    println("\t wX=$wX, nX=$nX, wY=$wY, nY=$nY, b=$b")
+
     val (F2,collisions) = attackClassic(Hrot, b, Gs.first,Gs.second,w,n)
     val pred_coll = combinations(nX,wX) * combinations(nY,wY) / BigInteger("2").pow(b)
     var success = false
@@ -133,7 +156,7 @@ fun GYH(i:Int, Hrot:ArrayList<String>, wX:Int, N:BigInteger, n:Int): String {
 fun lowHammingWeightStrings(n: Int, w: Int): ArrayList<Int> {
     var p = arrayListOf<Int>()
     var oldP = arrayListOf<Int>()
-    for (i in 0 until p.size){
+    for (i in 0 until w){//TODO
         p.add(i, 0)
         oldP.add(i,0)
     }
