@@ -1,19 +1,28 @@
 import kotlin.math.pow
 
 fun main() {
-
-    val lambda = 80
+    // Test
+    val lambda = 256
     val h = lambda
+    val timeStart = System.currentTimeMillis()
     val n = mersennePrimeBlock(lambda)
     val (pk,sk) = blockKeyGen(lambda, n, h)
+    val timeKgen = System.currentTimeMillis()
+    println(">> KeyGen time : ${timeKgen-timeStart}")
     val messageBlock = stringGen(lambda, lambda / 2)!!
+    val timeStartCypher = System.currentTimeMillis()
     val cypherText = blockEncryption(pk, messageBlock, n, h)
+    val timeCypher = System.currentTimeMillis()
+    println(">> Cypher time : ${timeCypher-timeStartCypher}")
     val obtaintedText = blockDecription(sk,cypherText,n,lambda)
+    val timeDecypher = System.currentTimeMillis()
+    println(">> Decypher time : ${timeDecypher-timeCypher}")
     val result = messageBlock == obtaintedText
     println(">> Encryption/Decryption result: $result")
-    println(">> Message v/s Decrypted Text")
-    println(messageBlock)
-    println(obtaintedText)
+//    println(">> Message v/s Decrypted Text")
+//    println(messageBlock)
+//    println(obtaintedText)
+    println(">> Total time : ${timeDecypher-timeStart}")
 }
 
 fun blockKeyGen(lambda: Int, n:Int, h: Int): Pair<Pair<String,String>, String> {

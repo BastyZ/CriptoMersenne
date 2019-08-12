@@ -2,15 +2,23 @@ import java.math.BigInteger
 import kotlin.math.pow
 
 fun main() {
-    val lambda = 20
+    // Test
+    val lambda = 512
+    val timeStart = System.currentTimeMillis()
     val (n, h) = mersennePrimeBit(lambda)
     val (pk,sk) = bitKeyGen(lambda, n, h)
+    val timeKeyGen = System.currentTimeMillis()
+    println(">> KeyGen time : ${timeKeyGen-timeStart}")
     val message = true
     val cypherText = bitEncryption(pk, message, n, h)
+    val timeCypher = System.currentTimeMillis()
     println("CYPHER TEXT (n=${cypherText.length})= $cypherText")
+    println(">> Cypher time : ${timeCypher-timeKeyGen}")
     val decypherText = bitDecription(sk,cypherText,n,h)
+    val timeDecypher = System.currentTimeMillis()
     println("RESULT BIT $decypherText")
-
+    println(">> Decypher time : ${timeDecypher-timeCypher}")
+    println(">> Total time : ${timeDecypher-timeStart}")
 }
 
 fun bitKeyGen(lambda: Int, n:Int, h: Int): Pair<String, String> {

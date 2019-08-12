@@ -1,21 +1,23 @@
 import java.math.BigInteger
 
 fun main(){
-    val lambda_limit = 80
-    val message = "Potato is the best word in the world"
+    // Test
+
+    val lambdaLimit = 80
+    val message = "Computador"
     println("The message is \t\t$message")
-    val bits_message = stringtToBits(message, lambda_limit)
+    val bitsMessage = stringtToBits(message, lambdaLimit)
     val binary = BigInteger(message.toByteArray()).toString(2)
     val lambda:Int = when {
-        bits_message.length > lambda_limit -> lambda_limit
-        else -> bits_message.length
+        bitsMessage.length > lambdaLimit -> lambdaLimit
+        else -> bitsMessage.length
     }
-    println("\tbinary representation of the message has ${binary.length} bits, and ${(bits_message.length/lambda).toInt()} block(s)")
+    println("\tbinary representation of the message has ${binary.length} bits, and ${(bitsMessage.length/lambda).toInt()} block(s)")
     var n = mersennePrimeBlock(lambda)
     println("KeyGen: for λ = $lambda n is $n and h is $lambda | ratio ${n/lambda}")
     val (pk, sk) = keyGenBlock(n,lambda)
     println("\t Public key (R,T) each one of ${pk.first.length} and secret key of ${sk.length}")
-    val cypherText = enc(pk, bits_message, lambda, n)
+    val cypherText = enc(pk, bitsMessage, lambda, n)
     println("\t Encoding message of size ${binary.length}... \n\t\t gives cyphertext (C1,C2) of ${cypherText.first.length} each one")
     val plainText = dec(sk, cypherText, lambda, n)
     println("\t Decoding cyphertext...\n\t\t gives plain text of size ${plainText.length}")

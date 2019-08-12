@@ -71,7 +71,8 @@ internal fun intMod(str: String, p: BigInteger): BigInteger {
  *  Seq (x) = x mod p as a n-bit string
  */
 internal fun seq(num: BigInteger, p: BigInteger, n: Int): String {
-    return num.mod(p).toBitString(n)
+    var se = num.mod(p).toBitString(n)
+    return se
 }
 
 internal fun BigInteger.toBitString(nbits: Int): String {
