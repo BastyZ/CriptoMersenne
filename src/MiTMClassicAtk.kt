@@ -3,9 +3,15 @@ import java.math.BigInteger
 import kotlin.math.floor
 
 fun main(){
-    val lambda = 20
+    val lambda=20
     val (n,w)=instanceMNCS(lambda)
-    val (G,H)=keyGenMNCS(lambda,n,w)
+    val key=keyGenMNCS(lambda,n,w)
+    test_classic_attack(n,w,key)
+}
+
+fun test_classic_attack(n:Int, w:Int, key:Pair<String,String>): Pair<Boolean, Int> {
+    val G = key.first
+    val H = key.second
     val (Ds,Gs)=initClassicAtk(n,w,H)
     val Hrot = Ds.first
     val b=Ds.second
@@ -15,14 +21,15 @@ fun main(){
     val pred_coll = combinations(nX,wX) * combinations(nY,wY) / BigInteger("2").pow(b)
     var success = false
 
-    // TODO
-//    if F2 is not None:
-//    G2 = F2 * inst.inv(H) % (2**n - 1)
-//    FoF2 = G2 * inst.inv(G) % (2**n - 1)
-//    if bin(FoF2).count('1') == 1:
-//    succ += True
-//    return succ, collisions/pred_coll
-
+    val N = BigInteger("2").pow(n)- BigInteger("1")
+    if (F2 != ""){
+        var G2 = (toOperableString(F2)*toOperableString(invString(H))).mod(N)
+        val FoF2 = (G2*toOperableString(invString(G))).mod(N)
+        if (hammingWeight(FoF2.toBitString(n))==1){
+            success = true
+        }
+    }
+    return Pair(success, collisions/pred_coll.toInt())
 }
 
 fun instanceMNCS(lambda:Int): Pair<Int, Int> {
@@ -77,9 +84,13 @@ fun attackClassic(Hrot: ArrayList<String>, b:Int, g1:Pair<Int,Int>, g2:Pair<Int,
 
     var collisions = 0
     val arraySize = BigInteger("2").pow(b).toInt()
-    var database = ArrayList<ArrayList<String>>(initialCapacity = arraySize)
+    var database = ArrayList<ArrayList<String>>()
 
-    var solF: String
+    for (i in 0 until arraySize){
+        database.add(arrayListOf<String>())
+    }
+
+    var solF= ""
 
     for (IX in lowHammingWeightStrings(nX,wX)){
         val vGXH = GXH(IX,Hrot, N, nX)
@@ -100,9 +111,7 @@ fun attackClassic(Hrot: ArrayList<String>, b:Int, g1:Pair<Int,Int>, g2:Pair<Int,
 
         }
     }
-
     return Pair(solF,collisions)
-
 }
 
 fun GXH(I:Int, Hrot: ArrayList<String>, N:BigInteger, n:Int): String {
@@ -133,8 +142,8 @@ fun lowHammingWeightStrings(n: Int, w: Int): ArrayList<Int> {
     while (!last){
         if (last){ break }
         if (w==0){
+            oldP = p
             last = true
-            return p
         }
 
         for (i in 0 until w){
