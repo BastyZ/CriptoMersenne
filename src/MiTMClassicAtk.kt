@@ -165,12 +165,11 @@ fun lowHammingWeightStrings(n: Int, w: Int): ArrayList<Int> {
 }
 
 // Localty-sensitive hash function
-fun LShash(A: String, b:Int): Int { //TODO
+fun LShash(A: String, b:Int): Int {
     var res = 0
     for (i in 0 until b){
         res *= 2
-        val B = toOperableString(shiftString(A,i,false))
-        val C = B.and(BigInteger("1"))
+        val C = toOperableString(A).shr(i).and(BigInteger("1"))
         res += C.toInt()
     }
     return res
