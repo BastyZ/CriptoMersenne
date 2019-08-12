@@ -134,6 +134,40 @@ fun binaryPoint(X:String, Y:String): String {
     }
 }
 
+fun invString(X:String): String {
+    var result =""
+    for (i in 0 until X.length){
+        val y =when {
+            X[i] == '0' -> '1'
+            X[i] == '-' -> '-'
+            else -> '0'
+        }
+        result += y
+    }
+    return result
+}
+
+fun shiftString(X:String, pase:Int, left:Boolean): String {
+    var result = ""
+    if (left){
+        for (i in pase until X.length){
+            result += X[i]
+        }
+        for (i in 0 until pase){
+            result += '0'
+        }
+    }
+    else{
+        for (i in 0 until pase){
+            result += '0'
+        }
+        for (i in 0 until (X.length-pase)){
+            result += X[i]
+        }
+    }
+    return result
+}
+
 fun sumStrings(X:String, Y:String): String {
     when {
         X.length != Y.length -> throw IllegalArgumentException("Suma de vectores con distinto largo")
