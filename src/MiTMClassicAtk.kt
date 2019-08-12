@@ -89,8 +89,7 @@ fun attackClassic(Hrot: ArrayList<String>, b:Int, g1:Pair<Int,Int>, g2:Pair<Int,
 
     for (IY in lowHammingWeightStrings(nY,wY)){
         val vGYH = GYH(IY,Hrot,wX,N,nX)
-        val A = ((-toOperableString(vGYH)).mod(N)).toBitString(nY)
-        val hGYH = LShash(A, b)
+        val hGYH = LShash((-vGYH)%N, b)
         for (vGXH in database[hGYH]){
             collisions += 1
             val S = (toOperableString(vGXH) + toOperableString(vGYH)).mod(N)
@@ -130,7 +129,7 @@ fun lowHammingWeightStrings(n: Int, w: Int): ArrayList<Int> {
     }
     var last = false
 
-    while (!last){
+    while (last or (w==0)){
         if (last){ break }
         if (w==0){
             last = true
@@ -169,8 +168,8 @@ fun LShash(A: String, b:Int): Int { //TODO
     var res = 0
     for (i in 0 until b){
         res *= 2
-        val B = toOperableString(shiftString(A,i,false))
-        val C = B.and(BigInteger("1"))
+        val B = toOperableString(A).shr(1)
+        val C = B.and(1.toBigInteger())
         res += C.toInt()
     }
     return res
