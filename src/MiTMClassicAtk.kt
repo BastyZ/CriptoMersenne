@@ -81,15 +81,15 @@ fun attackClassic(Hrot: ArrayList<String>, b:Int, g1:Pair<Int,Int>, g2:Pair<Int,
 
     var solF: String
 
-    for (IX in 0 until wX){
+    for (IX in lowHammingWeightStrings(nX,wX)){
         val vGXH = GXH(IX,Hrot, N, nX)
-        val hGXH = h(vGXH) //TODO
+        val hGXH = LShash(vGXH,b)
         database[hGXH].add(vGXH)
     }
 
-    for (IY in 0 until wY){
+    for (IY in lowHammingWeightStrings(nY,wY)){
         val vGYH = GYH(IY,Hrot,wX,N,nX)
-        val hGYH = h((-vGYH)%N) //TODO
+        val hGYH = LShash((-vGYH)%N, b)
         for (vGXH in database[hGYH]){
             collisions += 1
             val S = (toOperableString(vGXH) + toOperableString(vGYH)).mod(N)
@@ -118,4 +118,59 @@ fun GYH(i:Int, Hrot:ArrayList<String>, wX:Int, N:BigInteger, n:Int): String {
         res += toOperableString(Hrot[j + wX])
     }
     return res.mod(N).toBitString(n)
+}
+
+fun lowHammingWeightStrings(n: Int, w: Int): ArrayList<Int> {
+    var p = arrayListOf<Int>()
+    var oldP = arrayListOf<Int>()
+    for (i in 0 until p.size){
+        p.add(i, 0)
+        oldP.add(i,0)
+    }
+    var last = false
+
+    while (last or (w==0)){
+        if (last){ break }
+        if (w==0){
+            last = true
+            return p
+        }
+
+        for (i in 0 until w){
+            oldP[i] = p[i]
+        }
+        var j = w-1
+        var m = 0
+        while(true){
+            p[j] += 1
+            if (p[j] >= (n-m)){
+                j -= 1
+                m += 1
+                if (j < 0){
+                    last = true
+                    break
+                }
+            } else {
+                break
+            }
+        }
+
+        for (k in j+1 until w){
+            p[k] = p[k-1] + 1
+        }
+    }
+
+    return oldP
+}
+
+// Localty-sensitive hash function
+fun LShash(A: String, b:Int): Int { //TODO
+    var res = 0
+    for (i in 0 until b){
+        res *= 2
+        val B = toOperableString(A).toInt() >> i
+        val C = B & 1
+        res += C.toInt()
+    }
+    return res
 }
