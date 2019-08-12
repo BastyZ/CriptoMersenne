@@ -168,8 +168,8 @@ fun LShash(A: String, b:Int): Int { //TODO
     var res = 0
     for (i in 0 until b){
         res *= 2
-        val B = toOperableString(A).toInt() >> i
-        val C = B & 1
+        val B = toOperableString(A).toInt()>>i
+        val C = B.and(1)
         res += C.toInt()
     }
     return res
