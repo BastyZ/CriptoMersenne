@@ -6,7 +6,7 @@ fun main(){
     val min_lambda = 20
     val lambda_step = 10
     val max_lambda = 24
-    val samples = 2
+    val samples = 1
 
     for (lambda in min_lambda..max_lambda){
         var nr_success = 0
@@ -156,7 +156,7 @@ fun GYH(i:Int, Hrot:ArrayList<String>, wX:Int, N:BigInteger, n:Int): String {
 fun lowHammingWeightStrings(n: Int, w: Int): ArrayList<Int> {
     var p = arrayListOf<Int>()
     var oldP = arrayListOf<Int>()
-    for (i in 0 until w){//TODO
+    for (i in 0 until w){
         p.add(i, 0)
         oldP.add(i,0)
     }
@@ -189,7 +189,11 @@ fun lowHammingWeightStrings(n: Int, w: Int): ArrayList<Int> {
         }
 
         for (k in j+1 until w){
-            p[k] = p[k-1] + 1
+            val l = when {
+                k==0 -> 0
+                else -> k-1
+            }
+            p[k] = p[l] + 1
         }
     }
 
