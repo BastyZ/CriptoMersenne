@@ -6,8 +6,10 @@ fun main() {
     val lambda = 512
     val timeStart = System.currentTimeMillis()
     val (n, h) = mersennePrimeBit(lambda)
+    println("With λ=$lambda, we choose a Mersenne prime with n=$n and h=$h")
     val (pk,sk) = bitKeyGen(lambda, n, h)
     val timeKeyGen = System.currentTimeMillis()
+    println("Now we have a Public Key and a Secret Key of length $n")
     println(">> KeyGen time : ${timeKeyGen-timeStart}")
     val message = true
     val cypherText = bitEncryption(pk, message, n, h)
@@ -27,7 +29,6 @@ fun bitKeyGen(lambda: Int, n:Int, h: Int): Pair<String, String> {
     val p = 2.toBigInteger().pow(n).minus(BigInteger.ONE)
     val cond1 = combinations(n, h) >= 2.toBigInteger().pow(lambda)
     val cond2 = n > 4 * (h.toFloat().pow(2)) && n >= 16 * (h.toFloat().pow(2))
-//    println("With λ=$lambda, we choose a Mersenne prime with n=$n and h=$h")
 //    println("\t Meet the condition (n over h) >= 2^λ? $cond1")
 //    println("\t Meet the condition 4h² < n <= 16h²? $cond2")
 
@@ -40,7 +41,6 @@ fun bitKeyGen(lambda: Int, n:Int, h: Int): Pair<String, String> {
 
     val pk = seq(intMod(F, p).div(intMod(G, p)), p, n)
     val sk = G
-//    println("Now we have a Public Key and a Secret Key of length $n")
 //    println("\t PK of length ${pk.length} is $pk")
 //    println("\t SK of length ${sk.length} is $sk")
     return Pair(pk,sk)
@@ -60,7 +60,7 @@ fun bitEncryption(pk:String, b:Boolean, n:Int, h:Int): String{
 //    println("We encrypt the bit $message making (-1)^bit * (A∙pk + B)")
     // C = A.pk+B
     val C = toOperableString(sumStrings(binaryPoint(A, pk), B)).times(BigInteger("-1").pow(message))
-    println("\t (A∙pk + B) of ${C.bitLength()}")
+//    println("\t (A∙pk + B) of ${C.bitLength()}")
     return C.toBitString(n)
 }
 
@@ -74,10 +74,10 @@ fun bitDecription(sk: String, C: String, n: Int, h:Int): String {
         else -> C
     }.toString()
     val D = binaryPoint(newC, sk)
-    println("We decrypt a cypher text (${newC.length} bits) with the Secret key")
+//    println("We decrypt a cypher text (${newC.length} bits) with the Secret key")
     val d = hammingWeight(D)
-    println("\t C∙SK of lenght ${D.length}")
-    println("\t Ham(C∙SK) = $d")
+//    println("\t C∙SK of lenght ${D.length}")
+//    println("\t Ham(C∙SK) = $d")
     val result = when {
         d <= 2*(h.toFloat().pow(2)) -> "0"
         d >= n - 2*(h.toFloat().pow(2)) -> "1"

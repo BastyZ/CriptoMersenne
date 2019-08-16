@@ -3,8 +3,8 @@ import java.math.BigInteger
 fun main(){
     // Test
 
-    val lambdaLimit = 80
-    val message = "Computador"
+    val lambdaLimit = 512
+    val message = "Soy un secreto"
     println("The message is \t\t$message")
     val bitsMessage = stringtToBits(message, lambdaLimit)
     val binary = BigInteger(message.toByteArray()).toString(2)
