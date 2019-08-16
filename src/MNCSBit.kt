@@ -27,7 +27,7 @@ fun bitKeyGen(lambda: Int, n:Int, h: Int): Pair<String, String> {
     val p = 2.toBigInteger().pow(n).minus(BigInteger.ONE)
     val cond1 = combinations(n, h) >= 2.toBigInteger().pow(lambda)
     val cond2 = n > 4 * (h.toFloat().pow(2)) && n >= 16 * (h.toFloat().pow(2))
-    println("With λ=$lambda, we choose a Mersenne prime with n=$n and h=$h")
+//    println("With λ=$lambda, we choose a Mersenne prime with n=$n and h=$h")
 //    println("\t Meet the condition (n over h) >= 2^λ? $cond1")
 //    println("\t Meet the condition 4h² < n <= 16h²? $cond2")
 
@@ -40,7 +40,7 @@ fun bitKeyGen(lambda: Int, n:Int, h: Int): Pair<String, String> {
 
     val pk = seq(intMod(F, p).div(intMod(G, p)), p, n)
     val sk = G
-    println("Now we have a Public Key and a Secret Key of length $n")
+//    println("Now we have a Public Key and a Secret Key of length $n")
 //    println("\t PK of length ${pk.length} is $pk")
 //    println("\t SK of length ${sk.length} is $sk")
     return Pair(pk,sk)

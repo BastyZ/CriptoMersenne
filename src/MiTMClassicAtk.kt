@@ -1,18 +1,20 @@
-import java.lang.Math.log
 import java.math.BigInteger
 import kotlin.math.floor
+import kotlin.math.ln
 
 fun main(){
-    val min_lambda = 20
-    val lambda_step = 10
-    val max_lambda = 24
-    val samples = 1
+    val min_lambda = 128
+    val lambda_step = 50
+    val max_lambda = 512
+    val samples = 10
 
-    for (lambda in min_lambda..max_lambda){
+    for (lambda in min_lambda..max_lambda step lambda_step){
         var nr_success = 0
         var col_ratios = arrayListOf<Int>()
         val startAttack = System.currentTimeMillis()
         val (n,w)=instanceMNCS(lambda)
+//        println("With λ=$lambda, we choose a Mersenne prime with n=$n and h=$w")
+
         for (intent in 0 until samples) {
             val key=keyGenMNCS(lambda,n,w)
             var timeKeyGen = System.currentTimeMillis()
@@ -24,8 +26,9 @@ fun main(){
             col_ratios.add(col_ratio)
         }
         val endAttacks = System.currentTimeMillis()
-        println(">> n \tw \tb \ttrials \tsuccess(%) \ttime")
-        println("$n \t $w \tb \t$samples \t${nr_success.toDouble()/samples.toDouble()} \t${endAttacks - startAttack}")
+        println(">> λ \tn \t \tw \ttrials \tsuccess(%) \ttime")
+        println(">> $lambda \t$n \t$w \t$samples \t\t${nr_success.toDouble()/samples.toDouble()} \t\t${endAttacks - startAttack}")
+        println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     }
 
 }
@@ -38,7 +41,7 @@ fun test_classic_attack(n:Int, w:Int, key:Pair<String,String>): Pair<Boolean, In
     val b=Ds.second
     val (nX,wX)=Gs.first
     val (nY,wY)=Gs.second
-    println("\t wX=$wX, nX=$nX, wY=$wY, nY=$nY, b=$b")
+//    println("\t wX=$wX, nX=$nX, wY=$wY, nY=$nY, b=$b")
 
     val (F2,collisions) = attackClassic(Hrot, b, Gs.first,Gs.second,w,n)
     val pred_coll = combinations(nX,wX) * combinations(nY,wY) / BigInteger("2").pow(b)
@@ -76,20 +79,20 @@ fun initClassicAtk(n:Int, w:Int, PK:String): Pair<Pair<ArrayList<String>, Int>, 
         H = temp.toBitString(n)
     }
 
-    var wX = w/2
-    var nX = n/2
+    var wX = (w.toFloat()/2.0).toInt()
+    var nX = floor(n.toFloat()/2.0).toInt()
     var nY = n-nX
     val wY = w-wX
     if (wX < wY){
-        while(combinations(nX,wX) < combinations(nY,wY)){
+        while(nCr(nX,wX) < nCr(nY,wY)){
             nX += 1
             nY -= 1
         }
     }
-    println("\t g1 of length $nX and HW $wX")
-    println("\t g2 of length $nY and HW $wY")
+//    println("\t g1 of length $nX and HW $wX")
+//    println("\t g2 of length $nY and HW $wY")
 
-    val b = floor(log(combinations(nX,wX).toDouble())/log(2.toDouble())).toInt()
+    val b = floor(ln(nCr(nX,wX).toDouble())/ ln(2.toDouble())).toInt()
     val bMask = 2*b -1
 
     val g1 = Pair(nX,wX)
@@ -137,6 +140,9 @@ fun attackClassic(Hrot: ArrayList<String>, b:Int, g1:Pair<Int,Int>, g2:Pair<Int,
     return Pair(solF,collisions)
 }
 
+fun nCr(n:Int, r:Int): BigInteger {
+    return factorial(n.toBigInteger()).div(factorial(r.toBigInteger())).div(factorial(n.toBigInteger().minus(r.toBigInteger())))
+}
 fun GXH(I:Int, Hrot: ArrayList<String>, N:BigInteger, n:Int): String {
     var res = BigInteger("0")
     for (i in 0..I){
@@ -165,8 +171,7 @@ fun lowHammingWeightStrings(n: Int, w: Int): ArrayList<Int> {
     while (!last){
         if (last){ break }
         if (w==0){
-            oldP = p
-            last = true
+            return p
         }
 
         for (i in 0 until w){
