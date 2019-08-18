@@ -1,15 +1,13 @@
 import java.math.BigInteger
-import kotlin.math.floor
-import kotlin.math.ln
-import kotlin.math.sqrt
+import kotlin.math.*
 
 fun main(){
-    val min_lambda = 64
-    val lambda_step = 64
-    val max_lambda = 512
-    val samples = 3
+    val min_lambda = 8//64
+    val lambda_step = 4//64
+    val max_lambda = 64//512
+    val samples = 1
 
-    for (lambda in min_lambda..max_lambda step lambda_step){
+    for (lambda in min_lambda..max_lambda+1 step lambda_step){
         var nr_success = 0
         var col_ratios = arrayListOf<Int>()
         val startAttack = System.currentTimeMillis()
@@ -27,8 +25,8 @@ fun main(){
             col_ratios.add(col_ratio)
         }
         val endAttacks = System.currentTimeMillis()
-        println(">> λ \tn \t \tw \ttrials \tsuccess(%) \ttime")
-        println(">> $lambda \t$n \t$w \t$samples \t\t${nr_success.toDouble()/samples.toDouble()} \t\t${endAttacks - startAttack}")
+        println(" λ \tn \t\tw \ttrials \tsuccess(%) \ttime(ms)")
+        println(" $lambda \t$n \t$w \t$samples \t\t${nr_success.toFloat()/samples.toFloat()} \t\t${endAttacks - startAttack}")
         println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     }
 
@@ -92,8 +90,7 @@ fun initClassicAtk(n:Int, w:Int, PK:String): Pair<Pair<ArrayList<String>, Int>, 
     }
 //    println("\t g1 of length $nX and HW $wX")
 //    println("\t g2 of length $nY and HW $wY")
-
-    val b = floor(ln(nCr(nX,wX).toDouble())/ ln(2.toDouble())).toInt()
+    val b = floor(log(nCr(nX,wX).toDouble(), E).div(log(2.toDouble(),E))).toInt()
     val bMask = 2*b -1
 
     val g1 = Pair(nX,wX)
@@ -119,21 +116,21 @@ fun attackClassic(Hrot: ArrayList<String>, b:Int, g1:Pair<Int,Int>, g2:Pair<Int,
 
     var solF= ""
 
-    for (IX in lowHammingWeightStrings(nX,wX)){
+    for (IX in lowHammingWeightStrings(nX,wX,false,buildArrays(wX))){
         val vGXH = GXH(IX,Hrot, N, nX)
         val hGXH = LShash(vGXH,b)
         database[hGXH].add(vGXH)
     }
 
-    for (IY in lowHammingWeightStrings(nY,wY)){
+    for (IY in lowHammingWeightStrings(nY,wY,false,buildArrays(wY))){
         val vGYH = GYH(IY,Hrot,wX,N,nX)
         val A = ((-toOperableString(vGYH)).mod(N)).toBitString(nY)
         val hGYH = LShash(A, b)
         for (vGXH in database[hGYH]){
             collisions += 1
-            val S = (toOperableString(vGXH) + toOperableString(vGYH)).mod(N)
-            if (hammingWeight(S.toBitString(n)) >= w){
-                solF = S.toBitString(n)
+            val S = vGXH+vGYH
+            if (hammingWeight(S) >= w){
+                solF = S
             }
 
         }
@@ -160,53 +157,59 @@ fun GYH(i:Int, Hrot:ArrayList<String>, wX:Int, N:BigInteger, n:Int): String {
     return res.mod(N).toBitString(n)
 }
 
-fun lowHammingWeightStrings(n: Int, w: Int): ArrayList<Int> {
+fun buildArrays(n_elements:Int): ArrayList<Int> {
     var p = arrayListOf<Int>()
-    var oldP = arrayListOf<Int>()
-    for (i in 0 until w){
+    for (i in 0 until n_elements){
         p.add(i, 0)
-        oldP.add(i,0)
     }
-    var last = false
-
-    while (!last){
-        if (last){ break }
-        if (w==0){
-            return p
-        }
-
-        for (i in 0 until w){
-            oldP[i] = p[i]
-        }
-        var j = w-1
-        var m = 0
-        while(true){
-            p[j] += 1
-            if (p[j] >= (n-m)){
-                j -= 1
-                m += 1
-                if (j < 0){
-                    last = true
-                    break
-                }
-            } else {
-                break
-            }
-        }
-
-        for (k in j+1 until w){
-            val l = when {
-                k==0 -> 0
-                else -> k-1
-            }
-            p[k] = p[l] + 1
-        }
-    }
-
-    return oldP
+    return p
 }
 
-// Localty-sensitive hash function
+tailrec fun lowHammingWeightStrings(n: Int, w: Int, last: Boolean, oldP: ArrayList<Int>): ArrayList<Int> {
+    if (last){
+        return oldP
+    }
+
+    if (w==0){
+        return lowHammingWeightStrings(n,w,true,oldP)
+    }
+
+    var p = buildArrays(w)
+    for (i in 0 until w){
+        p[i] = oldP[i]
+    }
+    var j = w-1
+    var m = 0
+
+    while(true){
+        p[j] += 1
+        if (p[j] >= (n-m)){
+            j -= 1
+            m += 1
+            if (j < 0){
+                for (k in j+1 until w){
+                    val l = when {
+                        k==0 -> 0
+                        else -> k-1
+                    }
+                    p[k] = p[l] + 1
+                }
+                return lowHammingWeightStrings(n,w,true,p)
+            }
+        } else {
+            for (k in j+1 until w){
+                val l = when {
+                    k==0 -> 0
+                    else -> k-1
+                }
+                p[k] = p[l] + 1
+            }
+            return lowHammingWeightStrings(n,w,last,p)
+        }
+    }
+}
+
+// Localty-sensitive hashing function
 fun LShash(A: String, b:Int): Int {
     var res = 0
     for (i in 0 until b){
