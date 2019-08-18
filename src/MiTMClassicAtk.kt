@@ -1,12 +1,13 @@
 import java.math.BigInteger
 import kotlin.math.floor
 import kotlin.math.ln
+import kotlin.math.sqrt
 
 fun main(){
-    val min_lambda = 128
-    val lambda_step = 50
+    val min_lambda = 64
+    val lambda_step = 64
     val max_lambda = 512
-    val samples = 10
+    val samples = 3
 
     for (lambda in min_lambda..max_lambda step lambda_step){
         var nr_success = 0
@@ -18,7 +19,7 @@ fun main(){
         for (intent in 0 until samples) {
             val key=keyGenMNCS(lambda,n,w)
             var timeKeyGen = System.currentTimeMillis()
-            val (success, col_ratio) = test_classic_attack(n, w, key)
+            val (success, col_ratio) = test_classic_attack(n, key)
             nr_success += when{
                 success -> 1
                 else -> 0
@@ -33,9 +34,10 @@ fun main(){
 
 }
 
-fun test_classic_attack(n:Int, w:Int, key:Pair<String,String>): Pair<Boolean, Int> {
+fun test_classic_attack(n:Int, key:Pair<String,String>): Pair<Boolean, Int> {
     val G = key.first
     val H = key.second
+    val w = floor(sqrt(n.toFloat())/2.0).toInt()
     val (Ds,Gs)=initClassicAtk(n,w,H)
     val Hrot = Ds.first
     val b=Ds.second
@@ -78,7 +80,6 @@ fun initClassicAtk(n:Int, w:Int, PK:String): Pair<Pair<ArrayList<String>, Int>, 
         val temp = toOperableString(H).times(BigInteger("2")).mod(N)
         H = temp.toBitString(n)
     }
-
     var wX = (w.toFloat()/2.0).toInt()
     var nX = floor(n.toFloat()/2.0).toInt()
     var nY = n-nX
