@@ -167,7 +167,8 @@ fun buildArrays(n_elements:Int): ArrayList<Int> {
 
 tailrec fun lowHammingWeightStrings(n: Int, w: Int, last: Boolean, oldP: ArrayList<Int>): ArrayList<Int> {
     if (last){
-        return oldP
+        var clean = oldP.distinct() as ArrayList<Int>
+        return clean
     }
 
     if (w==0){
@@ -194,7 +195,10 @@ tailrec fun lowHammingWeightStrings(n: Int, w: Int, last: Boolean, oldP: ArrayLi
                     }
                     p[k] = p[l] + 1
                 }
-                return lowHammingWeightStrings(n,w,true,p)
+                var joined = ArrayList<Int>()
+                joined.addAll(p)
+                joined.addAll(oldP)
+                return lowHammingWeightStrings(n,w,true, joined)
             }
         } else {
             for (k in j+1 until w){
@@ -204,7 +208,10 @@ tailrec fun lowHammingWeightStrings(n: Int, w: Int, last: Boolean, oldP: ArrayLi
                 }
                 p[k] = p[l] + 1
             }
-            return lowHammingWeightStrings(n,w,last,p)
+            var joined = ArrayList<Int>()
+            joined.addAll(p)
+            joined.addAll(oldP)
+            return lowHammingWeightStrings(n,w,last,joined)
         }
     }
 }
