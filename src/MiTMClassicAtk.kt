@@ -2,12 +2,18 @@ import java.math.BigInteger
 import kotlin.math.*
 
 fun main(){
-    val min_lambda = 8//64
-    val lambda_step = 4//64
-    val max_lambda = 64//512
+    val min_lambda = 4//64
+    val max_lambda = 512//512
     val samples = 1
 
-    for (lambda in min_lambda..max_lambda+1 step lambda_step){
+    var lambda_array = mutableListOf<Int>(min_lambda)
+    var last_val = min_lambda
+    while (last_val < max_lambda+1){
+        last_val = lambda_array.last().toFloat().pow(2).toInt()
+        lambda_array.add(last_val)
+    }
+
+    for (lambda in lambda_array){
         var nr_success = 0
         var col_ratios = arrayListOf<Int>()
         val startAttack = System.currentTimeMillis()
@@ -25,9 +31,9 @@ fun main(){
             col_ratios.add(col_ratio)
         }
         val endAttacks = System.currentTimeMillis()
-        println(" λ \tn \t\tw \ttrials \tsuccess(%) \ttime(ms)")
-        println(" $lambda \t$n \t$w \t$samples \t\t${nr_success.toFloat()/samples.toFloat()} \t\t${endAttacks - startAttack}")
-        println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
+//        println(" λ \t\tn \t\tw \ttrials \tsuccess(%) \ttime(ms)")
+        println(" λ:$lambda, \tn:$n,\tw:$w, \ttrials:$samples, \tsuccess(%):${nr_success.toFloat()/samples.toFloat()}, \ttime(ms):${endAttacks - startAttack}")
+//        println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     }
 
 }
