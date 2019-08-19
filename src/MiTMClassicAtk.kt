@@ -2,27 +2,29 @@ import java.math.BigInteger
 import kotlin.math.*
 
 fun main(){
-    val min_lambda = 4//64
-    val max_lambda = 512//512
-    val samples = 1
+    val min_lambda = 2//64
+    val max_lambda = 13//512
+    val samples = 100
 
     var lambda_array = mutableListOf<Int>(min_lambda)
     var last_val = min_lambda
-    while (last_val < max_lambda+1){
-        last_val = lambda_array.last().toFloat().pow(2).toInt()
+    while (last_val < max_lambda){
+        last_val += 1 //lambda_array.last().toFloat().times(2).toInt()
         lambda_array.add(last_val)
     }
 
     for (lambda in lambda_array){
         var nr_success = 0
         var col_ratios = arrayListOf<Int>()
-        val startAttack = System.currentTimeMillis()
+        var startAttack = System.currentTimeMillis()
+        var timeKeyGen = System.currentTimeMillis()
         val (n,w)=instanceMNCS(lambda)
 //        println("With λ=$lambda, we choose a Mersenne prime with n=$n and h=$w")
 
         for (intent in 0 until samples) {
+            startAttack = System.currentTimeMillis()
             val key=keyGenMNCS(lambda,n,w)
-            var timeKeyGen = System.currentTimeMillis()
+            timeKeyGen = System.currentTimeMillis()
             val (success, col_ratio) = test_classic_attack(n, key)
             nr_success += when{
                 success -> 1
@@ -30,9 +32,9 @@ fun main(){
             }
             col_ratios.add(col_ratio)
         }
-        val endAttacks = System.currentTimeMillis()
+        var endAttacks = System.currentTimeMillis()
 //        println(" λ \t\tn \t\tw \ttrials \tsuccess(%) \ttime(ms)")
-        println(" λ:$lambda, \tn:$n,\tw:$w, \ttrials:$samples, \tsuccess(%):${nr_success.toFloat()/samples.toFloat()}, \ttime(ms):${endAttacks - startAttack}")
+        println(" λ:$lambda, \tn:$n,\tw:$w, \ttrials:$samples, \tsuccess(%):${nr_success.toFloat()/samples.toFloat()}, \ttime KeyGen(ms):${timeKeyGen - startAttack}, \ttime Atk(ms):${endAttacks - timeKeyGen}")
 //        println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>")
     }
 

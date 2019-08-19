@@ -1,30 +1,31 @@
 import kotlin.math.pow
 
-fun main() {
+fun multiBitSchema(lambda:Int) {
     // Test
-    val lambda = 512
+//    val lambda = 14
     val h = lambda
     val timeStart = System.currentTimeMillis()
     val n = mersennePrimeBlock(lambda)
-    println("With λ=$lambda, we choose a Mersenne prime with n=$n and h=λ=$h")
+//    println("With λ=$lambda, we choose a Mersenne prime with n=$n and h=λ=$h")
     val (pk,sk) = blockKeyGen(lambda, n, h)
     val timeKgen = System.currentTimeMillis()
-    println("Now we have a Public Key and a Secret Key of length $n")
-    println(">> KeyGen time : ${timeKgen-timeStart}")
+//    println("Now we have a Public Key and a Secret Key of length $n")
+//    println(">> KeyGen time : ${timeKgen-timeStart}")
     val messageBlock = stringGen(lambda, lambda / 2)!!
     val timeStartCypher = System.currentTimeMillis()
     val cypherText = blockEncryption(pk, messageBlock, n, h)
     val timeCypher = System.currentTimeMillis()
-    println(">> Cypher time : ${timeCypher-timeStartCypher}")
+//    println(">> Cypher time : ${timeCypher-timeStartCypher}")
     val obtaintedText = blockDecription(sk,cypherText,n,lambda)
     val timeDecypher = System.currentTimeMillis()
-    println(">> Decypher time : ${timeDecypher-timeCypher}")
+//    println(">> Decypher time : ${timeDecypher-timeCypher}")
     val result = messageBlock == obtaintedText
-    println(">> Encryption/Decryption result: $result")
-//    println(">> Message v/s Decrypted Text")
-//    println(messageBlock)
-//    println(obtaintedText)
-    println(">> Total time : ${timeDecypher-timeStart}")
+//    println(">> Encryption/Decryption result: $result")
+////    println(">> Message v/s Decrypted Text")
+////    println(messageBlock)
+////    println(obtaintedText)
+//    println(">> Total time : ${timeDecypher-timeStart}")
+    println("λ:$lambda,\tn:$n,\th:$h,\tsuccess:${result}\tKeyGen time(ms):${timeKgen-timeStart},\tCypher time:${timeCypher-timeKgen},\tDecypher time:${timeDecypher-timeCypher},\tTotal time:${timeDecypher - timeStart}")
 }
 
 fun blockKeyGen(lambda: Int, n:Int, h: Int): Pair<Pair<String,String>, String> {
