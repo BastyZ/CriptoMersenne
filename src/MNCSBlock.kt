@@ -15,9 +15,9 @@ fun multiBitSchema(lambda:Int): Map<String, Any> {
     val timeDecypher = System.currentTimeMillis()
     val result = messageBlock == obtaintedText
     val resultMap = mapOf(
-        "lambda" to lambda, "n" to n, "h" to h, "success" to result,
-        "KeyGenTime" to timeKgen-timeStart, "CypherTime" to timeCypher-timeKgen,
-        "DecypherTime" to timeDecypher-timeCypher, "TotalTime" to  timeDecypher - timeStart
+            "lambda" to lambda, "n" to n, "h" to h, "success" to result,
+            "KeyGenTime" to timeKgen-timeStart, "CypherTime" to timeCypher-timeStartCypher,
+            "DecypherTime" to timeDecypher-timeCypher, "TotalTime" to  timeDecypher - timeStart
     )
     //println("λ:$lambda,\tn:$n,\th:$h,\tsuccess:${result}\tKeyGen time(ms):${timeKgen-timeStart},\tCypher time:${timeCypher-timeKgen},\tDecypher time:${timeDecypher-timeCypher},\tTotal time:${timeDecypher - timeStart}")
     return resultMap

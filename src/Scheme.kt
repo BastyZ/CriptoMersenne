@@ -1,6 +1,6 @@
 
 fun main() {
-    val min_lambda = 4//64
+    val min_lambda = 16//64
     val max_lambda = 512//512
     val samples = 1
 
@@ -10,11 +10,10 @@ fun main() {
         last_val = lambda_array.last().toFloat().times(2).toInt()
         lambda_array.add(last_val)
     }
-    println(">> Single-bit schema")
-    for (lambda in lambda_array){
-        sampleSingleBitSchema(lambda,samples)
-    }
-
+//    println(">> Single-bit schema")
+//    for (lambda in lambda_array){
+//        sampleSingleBitSchema(lambda,samples)
+//    }
     println(">> Multi-bit schema")
     for (lambda in lambda_array) {
         sampleMultiBitSchema(lambda,samples)
@@ -27,7 +26,7 @@ fun sampleSingleBitSchema(lambda:Int, samples:Int){
     var decypher = ArrayList<Long>()
     var total = ArrayList<Long>()
     var (n,h) = Pair("","")
-    for (t in 0 until samples){
+    for (t in 1..samples){
         val result=singleBitSchema(lambda)
         n= result.get("n").toString()
         h= result.get("h").toString()
@@ -44,12 +43,15 @@ fun sampleSingleBitSchema(lambda:Int, samples:Int){
 }
 
 fun sampleMultiBitSchema(lambda:Int, samples:Int){
+    if (lambda < 10){
+        return
+    }
     var keyGen = ArrayList<Long>()
     var cypher = ArrayList<Long>()
     var decypher = ArrayList<Long>()
     var total = ArrayList<Long>()
     var (n,h) = Pair("","")
-    for (t in 0 until samples){
+    for (t in 1..samples){
         val result=multiBitSchema(lambda)
         n= result.get("n").toString()
         h= result.get("h").toString()
