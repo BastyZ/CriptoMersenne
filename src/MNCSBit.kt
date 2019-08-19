@@ -1,16 +1,12 @@
 import java.math.BigInteger
 import kotlin.math.pow
 
-fun singleBitSchema(lambda:Int) {
+fun singleBitSchema(lambda:Int): Map<String, Any> {
     // Test
-//    val lambda = 512
     val timeStart = System.currentTimeMillis()
     val (n, h) = mersennePrimeBit(lambda)
-//    println("With λ=$lambda, we choose a Mersenne prime with n=$n and h=$h")
     val (pk,sk) = bitKeyGen(lambda, n, h)
     val timeKeyGen = System.currentTimeMillis()
-//    println("Now we have a Public Key and a Secret Key of length $n")
-//    println(">> KeyGen time : ${timeKeyGen-timeStart}")
     val message = true
     val messageStr = when {
         message -> "1"
@@ -18,14 +14,16 @@ fun singleBitSchema(lambda:Int) {
     }
     val cypherText = bitEncryption(pk, message, n, h)
     val timeCypher = System.currentTimeMillis()
-//    println("CYPHER TEXT (n=${cypherText.length})= $cypherText")
-//    println(">> Cypher time : ${timeCypher-timeKeyGen}")
     val decypherText = bitDecription(sk,cypherText,n,h)
     val timeDecypher = System.currentTimeMillis()
-//    println("RESULT BIT $decypherText")
-//    println(">> Decypher time : ${timeDecypher-timeCypher}")
-//    println(">> Total time : ${timeDecypher-timeStart}")
-    println("λ:$lambda,\tn:$n,\th:$h,\tsuccess:${messageStr==decypherText}\tKeyGen time(ms):${timeKeyGen-timeStart},\tCypher time:${timeCypher-timeKeyGen},\tDecypher time:${timeDecypher-timeCypher},\tTotal time:${timeDecypher - timeStart}")
+    val result = messageStr==decypherText
+    val resultMap = mapOf(
+        "lambda" to lambda, "n" to n, "h" to h, "success" to result,
+        "KeyGenTime" to timeKeyGen-timeStart, "CypherTime" to timeCypher-timeKeyGen,
+        "DecypherTime" to timeDecypher-timeCypher, "TotalTime" to  timeDecypher - timeStart
+        )
+    //println("λ:$lambda,\tn:$n,\th:$h,\tsuccess:${messageStr==decypherText}\tKeyGen time(ms):${timeKeyGen-timeStart},\tCypher time:${timeCypher-timeKeyGen},\tDecypher time:${timeDecypher-timeCypher},\tTotal time:${timeDecypher - timeStart}")
+    return resultMap
 }
 
 fun bitKeyGen(lambda: Int, n:Int, h: Int): Pair<String, String> {

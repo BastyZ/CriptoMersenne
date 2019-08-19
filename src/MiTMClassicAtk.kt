@@ -9,7 +9,7 @@ fun main(){
     var lambda_array = mutableListOf<Int>(min_lambda)
     var last_val = min_lambda
     while (last_val < max_lambda){
-        last_val += 1 //lambda_array.last().toFloat().times(2).toInt()
+        last_val += 1
         lambda_array.add(last_val)
     }
 
