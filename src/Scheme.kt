@@ -10,10 +10,10 @@ fun main() {
         last_val = lambda_array.last().toFloat().times(2).toInt()
         lambda_array.add(last_val)
     }
-//    println(">> Single-bit schema")
-//    for (lambda in lambda_array){
-//        sampleSingleBitSchema(lambda,samples)
-//    }
+    println(">> Single-bit schema")
+    for (lambda in lambda_array){
+        sampleSingleBitSchema(lambda,samples)
+    }
     println(">> Multi-bit schema")
     for (lambda in lambda_array) {
         sampleMultiBitSchema(lambda,samples)
